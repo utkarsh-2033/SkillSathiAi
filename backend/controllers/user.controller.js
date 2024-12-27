@@ -4,9 +4,9 @@ const bcrypt = require("bcrypt");
  const updateprofilecontroller = async (req, res, next) => {
   const userId = req.params.id;
 
-  if (req.user.userId !== userId) {
-    return res.status(403).json({ success: false, message: "unauthorized" });
-  }
+  // if (req.user.userId !== userId) {
+  //   return res.status(403).json({ success: false, message: "unauthorized" });
+  // }
 
   if (req.body.password) {
     req.body.password = bcrypt.hashSync(req.body.password, 10);
@@ -40,9 +40,9 @@ const bcrypt = require("bcrypt");
   const userId = req.params.id;
   // console.log(userId);
   // console.log(req.user.userId);
-  if (req.user.userId !== userId) {
-    return res.status(403).json({ success: false, message: "unauthorized" });
-  }
+  // if (req.user.userId !== userId) {
+  //   return res.status(403).json({ success: false, message: "unauthorized" });
+  // }
   try {
     await User.findByIdAndDelete(userId);
     res.clearCookie("access_token");
@@ -60,5 +60,5 @@ const bcrypt = require("bcrypt");
 module.exports = {
   logoutuserhandler,
   deleteusercontroller,
-  updateprofilecontroller
+  updateprofilecontroller,
 };

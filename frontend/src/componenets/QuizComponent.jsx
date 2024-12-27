@@ -2,9 +2,9 @@
 import React, { useState, useEffect } from 'react';
 import LoadingComponent from './Loading';
 import QuizResults from './QuizResults';
-import MultipleChoiceQuestion from './MultipleChoiceQuestion';
-import SubjectiveQuestion from './SubjectiveQuestion';
-import CodingQuestion from './CodingQuestion';
+import MultipleChoiceQuestion from './Questionformat/MultipleChoiceQuestion';
+import SubjectiveQuestion from './Questionformat/SubjectiveQuestion';
+import CodingQuestion from './Questionformat/CodingQuestion';
 
 const QuizComponent = ({ careerGoal }) => {
   const [questions, setQuestions] = useState([]);

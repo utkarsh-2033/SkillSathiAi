@@ -1,4 +1,5 @@
 import React from 'react'
+import { useState } from 'react';
 import QuizComponent from '../componenets/QuizComponent'
 
 const skillAssessment = () => {
@@ -35,4 +36,4 @@ const skillAssessment = () => {
     );
 }
 
-export default skill-assessment
+export default skillAssessment;

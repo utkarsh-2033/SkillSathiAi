@@ -4,7 +4,8 @@ import Signin from "./pages/Signin";
 import Signup from "./pages/Signup";
 import Navbar from "./componenets/Navbar";
 import Profile from "./pages/Profile";
-import PrivateProfile from "./components/PrivateProfile";
+import PrivateProfile from "./componenets/PrivateProfile";
+import SkillAssessment from './pages/skill-assessment'
 function App() {
   return (
     <BrowserRouter>
@@ -15,6 +16,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route element={<PrivateProfile/>}>
           <Route path="/profile" element={<Profile />} />
+          <Route path="/skill-assessment" element={<SkillAssessment />} />
         </Route>
       </Routes>
     </BrowserRouter>

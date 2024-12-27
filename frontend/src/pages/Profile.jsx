@@ -8,7 +8,7 @@ import {
   UpdateuserFailure,
   DeleteLogoutUserSuccess,
   DeleteLogoutUserFailure
-} from "../../redux/slices/userSlice";
+} from "../redux/slices/userSlice";
 import { useDispatch } from "react-redux";
 const Profile = () => {
   const [file, setfile] = useState(null);
@@ -126,7 +126,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="max-w-lg  m-auto mt-20 p-4 bg-white rounded-md shadow-lg">
+    <div className="max-w-lg flex flex-col sm:flex-row sm:flex-1  m-auto mt-20 p-4 bg-white rounded-md shadow-lg">
       <div className="flex flex-col">
         <input
           type="file"
@@ -215,8 +215,6 @@ const Profile = () => {
             </button>
           )}
         </form>
-      </div>
-      <br className="" />
       <div className="flex flex-col gap-4 mt-8">
         <button onClick={logoutHandler} className="bg-red-300 font-semibold p-2 rounded-md hover:opacity-90 flex justify-center items-center gap-2">
           Logout
@@ -229,6 +227,11 @@ const Profile = () => {
           Delete
         </button>
       </div>
+      </div>
+      <div>
+        
+      </div>
+      
     </div>
   );
 };

@@ -1,236 +1,81 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { FaEdit, FaSignOutAlt } from "react-icons/fa";
-import { useState, useRef, useEffect } from "react";
-import {useNavigate} from 'react-router-dom'
-import {
-  UpdateuserSuccess,
-  UpdateuserFailure,
-  DeleteLogoutUserSuccess,
-  DeleteLogoutUserFailure
-} from "../../redux/slices/userSlice";
-import { useDispatch } from "react-redux";
-const Profile = () => {
-  const [file, setfile] = useState(null);
-  const [errorUpload, seterrorUpload] = useState(false);
-  const [uploadcomplete, setuploadcomplete] = useState(false);
-  const [formdata, setformdata] = useState({});
-  const [editmode, seteditmode] = useState(false);
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useSelector,useDispatch } from "react-redux";
+import { SiginStart,SigninSuccess,SigninFailure } from "../redux/slices/userSlice";
+import OAuth from "../componenets/OAuth";
 
-  const fileRef = useRef(null);
+const Signin = () => {
+  const [formdata, setFormdata] = useState({});
   const dispatch = useDispatch();
-  const { currentUser: user, error } = useSelector((state) => state.user);
-  const navigate=useNavigate();
+  const {isloading,error} = useSelector(state=>state.user);
 
-  useEffect(() => {
-    if (file) {
-      handleFileUpload(file);
-    }
-  }, [file]);
 
-  const handleFileUpload = (file) => {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", "e-estate");
-    fetch("https://api.cloudinary.com/v1_1/duw0uzjax/image/upload", {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setformdata((prevFormData) => ({
-          ...prevFormData,
-          photo: data.url,
-        }));
-        // console.log(data.url);
-        seterrorUpload(false);
-        setuploadcomplete(true);
-        setfile(null);
-      })
-      .catch((error) => {
-        console.error("Error uploading image:", error);
-        seterrorUpload(true);
-      });
-  };
-
-  const onChangeHandler = (e) => {
-    setformdata((prevFormData) => {
-      return { ...prevFormData, [e.target.id]: e.target.value };
-    });
-  };
+  const navigate = useNavigate();
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    setuploadcomplete(false);
+    dispatch(SiginStart());
     try {
-      const res = await fetch(`/user/updateprofile/${user._id}`, {
+      const res = await fetch("/api/auth/signin", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-type": "application/json" },
         body: JSON.stringify(formdata),
+        // credentials: 'include',
       });
-      const result = await res.json();
-      if (!result.success) {
-        dispatch(UpdateuserFailure(result.message));
+      const data = await res.json();
+      // console.log(data.user);
+      if (!data.success) {
+        dispatch(SigninFailure(data.message));
         return;
       }
-      dispatch(UpdateuserSuccess(result.user));
-      seteditmode(false);
-    } catch (error) {
-      console.log(error);
+      dispatch(SigninSuccess(data.user));
+      navigate('/')
+    } catch (err) {
+      console.log(err);
     }
   };
 
-  const deleteUserHandler = async() => {
-    try {
-     const res= await fetch(`/user/deleteuser/${user._id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      const data=await res.json();
-      if(data.success){
-        dispatch(DeleteLogoutUserSuccess());
-        navigate('/signup');
-      }else{
-        dispatch(DeleteLogoutUserFailure(data.message));
-      }
-        
-    } catch (error) {
-      console.log(error);
-      dispatch(DeleteLogoutUserFailure("Error deleting user"));
-    }
+  const changeHandler = (e) => {
+    setFormdata((prevdata) => {
+      return { ...prevdata, [e.target.id]: e.target.value };
+    });
+    // console.log(formdata);
   };
-
-  const logoutHandler=async()=>{
-    try{
-     const res= await fetch('/user/logout',{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json'
-      }
-     })
-     const result =await res.json();
-     if(!result.success){
-      dispatch(DeleteLogoutUserFailure(result.message))
-      return;
-     }
-     dispatch(DeleteLogoutUserSuccess())
-     navigate('/signin')
-    }catch(err){
-      console.log('logout error',err)
-      dispatch(DeleteLogoutUserFailure('Error logging out'));
-    }
-  }
-
   return (
-    <div className="max-w-lg  m-auto mt-20 p-4 bg-white rounded-md shadow-lg">
-      <div className="flex flex-col">
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => {
-            setfile(e.target.files[0]);
-          }}
-          ref={fileRef}
-          hidden
-        />
-        <img
-          src={formdata.photo || user.photo}
-          alt="profile"
-          className="rounded-full self-center h-24 w-24 object-cover"
-        />
-        {editmode && (
-          <FaEdit
-            onClick={() => editmode && fileRef.current.click()}
-            className="self-center -mt-4 bg-white "
+    <div>
+      <div className=" max-w-md mt-16 m-auto">
+        <h1 className="font-bold text-2xl my-4 text-center">SignIn</h1>
+        <form onSubmit={submitHandler} className="flex flex-col gap-4">
+          <input
+            type="email"
+            id="email"
+            placeholder="email"
+            onChange={changeHandler}
+            className="focus:outline-4 focus:outline-gray-700 rounded-md p-2 bg-slate-200"
           />
-        )}
-
-        {!errorUpload && uploadcomplete && (
-          <p className="text-green-400 text-center">Image upload successful</p>
-        )}
-        {errorUpload && (
-          <p className="text-red-700 text-center">Error in Image upload</p>
-        )}
-        <form onSubmit={submitHandler} className="flex flex-col gap-4 my-3">
-          <div className="flex flex-col">
-            <label htmlFor="name">Name</label>
-            <input
-              type="text"
-              id="name"
-              defaultValue={user.username}
-              onChange={onChangeHandler}
-              disabled={!editmode}
-              className={` ${
-                editmode ? "bg-slate-200 border-2 border-black" : "bg-slate-100"
-              } focus:outline-4 rounded-md p-2 font-semibold`}
-            />
-          </div>
-          <div className="flex flex-col">
-            <label htmlFor="email">Email</label>
-            <input
-              type="text"
-              id="email"
-              defaultValue={user.email}
-              onChange={onChangeHandler}
-              disabled={!editmode}
-              className={` ${
-                editmode ? "bg-slate-200 border-2 border-black" : "bg-slate-100"
-              } focus:outline-4 rounded-md p-2 font-semibold`}
-            />
-          </div>
-          <div className="flex flex-col">
-            <label htmlFor="password">Password</label>
-            <input
-              type="Password"
-              id="password"
-              defaultValue="764tr64t"
-              onChange={onChangeHandler}
-              disabled={!editmode}
-              className={` ${
-                editmode ? "bg-slate-200 border-2 border-black" : "bg-slate-100"
-              } focus:outline-4 rounded-md p-2 font-semibold`}
-            />
-          </div>
-          {!editmode && (
-            <button
-              type="button"
-              onClick={() => seteditmode(true)}
-              className="bg-blue-600 p-2 w-24 text-white font-semibold hover:opacity-90  rounded-md self-center flex justify-center items-center gap-2"
-            >
-              Edit
-              <FaEdit />
-            </button>
-          )}
-          {error && <p className="text-red-700 text-center">{error}</p>}
-          {editmode && (
-            <button
-              type="submit"
-              className="bg-green-600 p-2 w-24 text-white font-semibold hover:opacity-90  rounded-md self-center flex justify-center items-center gap-2"
-            >
-              Save
-            </button>
-          )}
+          <input
+            type="password"
+            id="password"
+            placeholder="password"
+            onChange={changeHandler}
+            className="focus:outline-4 focus:outline-gray-700 rounded-md p-2 bg-slate-200"
+          />
+          <button className="bg-gray-700 hover:opacity-90 font-semibold rounded-lg p-2 text-white">
+            {isloading ? "loading" : "SIGNIN"}
+          </button>
         </form>
-      </div>
-      <br className="" />
-      <div className="flex flex-col gap-4 mt-8">
-        <button onClick={logoutHandler} className="bg-red-300 font-semibold p-2 rounded-md hover:opacity-90 flex justify-center items-center gap-2">
-          Logout
-          <FaSignOutAlt />
-        </button>
-        <button
-          onClick={deleteUserHandler}
-          className="bg-red-800 text-slate-100 font-semibold p-2 rounded-md hover:opacity-90 "
-        >
-          Delete
-        </button>
+        {error && <p className="text-red-500 text-center mt-2">{error}</p>}
+        <OAuth/>
+        <p className="text-center flex mt-4 mr-1">
+          Don't have an account?{" "}
+          <Link to={"/signup"}>
+            <span className="text-blue-400 ">signup</span>
+          </Link>
+        </p>
       </div>
     </div>
   );
 };
 
-export default Profile;
+export default Signin;

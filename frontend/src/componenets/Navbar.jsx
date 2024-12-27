@@ -2,7 +2,7 @@ import React from "react";
 import { FaSearch } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { selectUser } from "../../redux/slices/userSlice";
+import { selectUser } from "../redux/slices/userSlice";
 
 const Navbar = () => {
   const user = useSelector(selectUser);
@@ -12,8 +12,8 @@ const Navbar = () => {
       <div className="flex justify-between items-center py-2 px-4 max-w-7xl mx-auto shadow-lg">
         <Link to="/">
           <p className="font-extrabold text-sm sm:text-2xl">
-            <span className="text-white">Prop</span>
-            <span className="text-[#9333ea]">Xchange</span>
+            <span className="text-white">SkillSathi</span>
+            <span className="text-[#9333ea]">AI</span>
           </p>
         </Link>
         <form>

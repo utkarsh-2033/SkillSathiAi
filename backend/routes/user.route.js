@@ -4,9 +4,9 @@ const { verifyUser } = require('../utils/verifyUser.js');
 
 const router=express.Router();
 
-router.post('/updateprofile/:id',verifyUser,updateprofilecontroller)
+router.post('/updateprofile/:id',updateprofilecontroller)
 
-router.delete('/deleteuser/:id',verifyUser,deleteusercontroller);
+router.delete('/deleteuser/:id',deleteusercontroller);
 
 router.post('/logout',logoutuserhandler);
 

@@ -14,6 +14,7 @@ export default defineConfig({
         changeOrigin: true,
         // rewrite: (path) => path.replace(/^\/api/, ''), // Remove '/api' prefix
       },
+      '/user': { target: "http://localhost:5000", secure: false },
     },
   },
 

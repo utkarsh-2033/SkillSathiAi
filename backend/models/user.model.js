@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "https://www.pngmart.com/files/23/Profile-PNG-Photo.png",
   },
-  careerGoal: { type: String, required: true },
+  careerGoal: { type: String, required: false },
   skills: [String], // List of skills the user knows
   progress: {
     quizzesTaken: [{ type: mongoose.Schema.Types.ObjectId, ref: "Quiz" }],
