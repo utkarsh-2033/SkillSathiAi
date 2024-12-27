@@ -1,47 +1,5 @@
 
 
-//  const getQuizcontroller=async (req, res) => {
-//   const { careerGoal, skill, difficulty } = req.query;
-
-//   try {
-//     const questions = await Quiz.find({
-//       careerGoal,
-//       skill,
-//       difficulty,
-//     });
-//     res.json(questions);
-//   } catch (error) {
-//     res.status(500).json({ message: 'Failed to fetch quiz', error });
-//   }
-// }
-
-
-//  const postquizcontroller=async (req, res) => {
-//   const { userId, quizId, answers } = req.body;
-
-//   try {
-//     const quiz = await Quiz.findById(quizId);
-//     let score = 0;
-
-//     answers.forEach((answer, index) => {
-//       if (answer === quiz.correctOption) {
-//         score++;
-//       }
-//     });
-
-//     // Update user progress
-//     const user = await User.findById(userId);
-//     user.progress.quizzesTaken.push(quizId);
-//     await user.save();
-
-//     res.json({ score, totalQuestions: quiz.options.length });
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error processing quiz submission', error });
-//   }
-// }
-
-// controllers/quiz.controller.js
-
 const Quiz = require('../models/quiz.model');
 
 const getQuizByCareerGoal = async (req, res) => {
