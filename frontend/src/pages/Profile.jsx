@@ -9,6 +9,7 @@ import {
   DeleteLogoutUserSuccess,
   DeleteLogoutUserFailure
 } from "../redux/slices/userSlice";
+import CareerGoalsSelection from "../componenets/CareerGoalSelection";
 import { useDispatch } from "react-redux";
 const Profile = () => {
   const [file, setfile] = useState(null);
@@ -126,8 +127,8 @@ const Profile = () => {
   }
 
   return (
-    <div className="max-w-lg flex flex-col sm:flex-row sm:flex-1  m-auto mt-20 p-4 bg-white rounded-md shadow-lg">
-      <div className="flex flex-col">
+    <div className="max-w-5xl flex flex-col sm:flex-row gap-8  m-auto mt-5 p-8 pt-2 bg-white rounded-md shadow-lg">
+      <div className="flex flex-col sm:flex-1">
         <input
           type="file"
           accept="image/*"
@@ -228,8 +229,8 @@ const Profile = () => {
         </button>
       </div>
       </div>
-      <div>
-        
+      <div className="sm: flex-1">
+        <CareerGoalsSelection/>
       </div>
       
     </div>

@@ -7,6 +7,7 @@ const dotenv = require("dotenv");
 const quizRoutes = require("./routes/quiz.routes");
 const authRoutes = require("./routes/auth.route.js");
 const userRoutes = require('./routes/user.route.js');
+const careerGoalsRoutes= require('./routes/careerGoals.route.js')
 const cookieParser = require("cookie-parser");
 
 
@@ -35,6 +36,7 @@ app.listen(port, () => {
 app.use("/api", quizRoutes);
 app.use("/api", authRoutes);
 app.use('/user',userRoutes);
+app.use('/api',careerGoalsRoutes)
 
 app.use((err, req, res, next) => {
   const statusCode = err.status || 500;
