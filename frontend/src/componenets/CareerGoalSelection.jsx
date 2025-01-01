@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
 import { selectUser } from "../redux/slices/userSlice";
+import { UpdateuserSuccess } from "../redux/slices/userSlice";
 
 const CareerGoalSelection = () => {
   const [careerGoals, setCareerGoals] = useState([]);
@@ -18,6 +19,7 @@ const CareerGoalSelection = () => {
     skills: [],
   });
 const user=useSelector(selectUser);
+const dispatch=useDispatch();
 
   // Fetch all career goals
   useEffect(() => {
@@ -162,6 +164,7 @@ const user=useSelector(selectUser);
       const data = await response.json();
       if (response.ok) {
         // console.log("Career details updated:", data);
+        dispatch(UpdateuserSuccess(data.user))
         setError("Career Goal selected and saved.")
       } else {
         console.error("Error updating career details:", data.message);

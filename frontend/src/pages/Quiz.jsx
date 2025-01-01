@@ -19,10 +19,12 @@ const Quiz = () => {
 
   // Fetch the level from the query string (default to "easy")
   const queryParams = new URLSearchParams(location.search);
-  const level = queryParams.get("level") || "easy"; // Default to 'easy' if no level is provided
+  const level = queryParams.get("level") || "easy";
 
   // Fetch questions based on skillname and level
   useEffect(() => {
+    setIsCompleted(false);
+    setCurrentQuestionIndex(0);
     const fetchQuestions = async () => {
       try {
         const response = await fetch(
@@ -36,7 +38,7 @@ const Quiz = () => {
       }
     };
 
-    fetchQuestions(); // Call the function to fetch data
+    fetchQuestions();
   }, [skillname, level]);
 
   const handleAnswerChange = (questionIndex, answer) => {
@@ -63,6 +65,15 @@ const Quiz = () => {
     setIsTimerStopped(true);
   };
 
+  const handleQuizLevel = () => {
+    if (level === "easy") {
+      navigate(`/quiz/${skillname}?level=intermediate`);
+    } else {
+      navigate(`/quiz/${skillname}?level=advanced`);
+    }
+  };
+  
+
   const calculateTimeTaken = () => {
     return ((Date.now() - quizStartTime) / 1000).toFixed(2); // Time in seconds
   };
@@ -79,7 +90,9 @@ const Quiz = () => {
 
   return (
     <div className="bg-gray-100 w-4/5 mx-auto mt-6 p-6 rounded-lg shadow-lg  max-w-4xl">
-      <h2 className="text-3xl font-bold mb-4 text-center">Quiz: {skillname}</h2>
+      <h2 className="text-3xl font-bold mb-4 text-center">
+        Quiz: {skillname}- <span className="text-green-800">{level}</span>
+      </h2>
       {/* <FormatTimer quizStartTime={quizStartTime} /> */}
       {!isCompleted && (
         <FormatTimer
@@ -116,6 +129,16 @@ const Quiz = () => {
                 {calculateTimeTaken()} seconds
               </span>
             </p>
+            {level !== "advanced" && (
+              <button
+                onClick={handleQuizLevel}
+                className="px-8 my-2 py-3 bg-green-600 text-gray-800 rounded-full shadow-md hover:bg-green-400 transition duration-300 ease-in-out transform hover:scale-105"
+              >
+                {level === "easy"
+                  ? "Go to Intermediate level"
+                  : "Go to Advance level"}
+              </button>
+            )}
             <button
               onClick={() => navigate("/skill-assessment")}
               className="px-8 py-3 bg-yellow-400 text-gray-800 rounded-full shadow-md hover:bg-yellow-500 transition duration-300 ease-in-out transform hover:scale-105"

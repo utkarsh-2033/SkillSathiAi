@@ -16,12 +16,12 @@ const SkillAssessmentPage = () => {
   // Filter "known" skills
   const knownSkills = skills.filter((skill) => skill.known);
 
-  const handleSkillSelect = (skillName) => {
+  const handleSkillSelect = (skillName,quizLevel) => {
     setSelectedSkill(skillName);
-    console.log(`Skill selected for quiz: ${skillName}`);
+    // console.log(`Skill selected for quiz: ${skillName}`);
     
-    // Navigate to the quiz page with query parameters
-    navigate(`/quiz/${skillName}?level=easy`); // Default level is "easy"
+    // Navigating to the quiz page with query parameters
+    navigate(`/quiz/${skillName}?level=${quizLevel}`); 
   };
 
   return (

@@ -79,7 +79,8 @@ const updateCareerDetails = async (req, res) => {
     };
 
     await user.save();
-    res.status(200).json({ message: "Career details updated successfully", careerDetails: user.careerDetails });
+    const { password, ...rest } = user._doc;
+    res.status(200).json({ message: "Career details updated successfully", user:rest });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Failed to update career details" });
