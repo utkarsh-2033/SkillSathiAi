@@ -19,11 +19,27 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "https://www.pngmart.com/files/23/Profile-PNG-Photo.png",
   },
-  careerGoal: { type: String, required: false },
-  skills: [String], // List of skills the user knows
-  progress: {
-    quizzesTaken: [{ type: mongoose.Schema.Types.ObjectId, ref: "Quiz" }],
+  careerDetails: {
+    careerGoal: {
+      type: String,
+    },
+    level: {
+      type: String,
+    },
+    subLevel: {
+      type: String,
+    },
+    skills: [
+      {
+        skillName: { type: String, required: true },
+        known: { type: Boolean, required: true },
+        level: {
+          type: String,
+          enum: ["nill", "Beginner", "Intermediate", "Advanced"],
+          required: false,
+        },
+      },
+    ],
   },
 });
-
 module.exports = mongoose.model("User", userSchema);

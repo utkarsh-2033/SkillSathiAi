@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { selectUser } from "../redux/slices/userSlice";
 
 const CareerGoalSelection = () => {
   const [careerGoals, setCareerGoals] = useState([]);
@@ -15,6 +17,7 @@ const CareerGoalSelection = () => {
     subLevelName: "",
     skills: [],
   });
+const user=useSelector(selectUser);
 
   // Fetch all career goals
   useEffect(() => {
@@ -35,6 +38,10 @@ const CareerGoalSelection = () => {
     const careerGoalId = e.target.value;
     setSelectedCareerGoal(careerGoalId);
 
+    setUserdata((prevData) => ({
+      ...prevData,
+      careerGoalName: careerGoalId,
+    }));
     // Fetch career goal details (levels and sub-levels)
     try {
       const response = await fetch(`/api/careergoals/${careerGoalId}`);
@@ -43,10 +50,6 @@ const CareerGoalSelection = () => {
       setSkills([]); // Reset skills when a new career goal is selected
       setSublevels([]); // Reset sublevels
       setSelectedSkills({}); // Reset selected skills
-      setUserdata((prevData) => ({
-        ...prevData,
-        careerGoalName: selectedCareerGoal,
-      }));
     } catch (error) {
       setError("Error fetching career goal details");
     }
@@ -113,57 +116,62 @@ const CareerGoalSelection = () => {
   // Handle skill level change (Beginner, Intermediate, Advanced)
   const handleSkillChange = (skillName, field, value) => {
     setSelectedSkills((prevSkills) => {
-      // Ensure prevSkills is always an array
-      const updatedSkills = Array.isArray(prevSkills) ? [...prevSkills] : [];
-
-      const skillIndex = updatedSkills.findIndex(
-        (skill) => skill.name === skillName
-      );
-
-      if (skillIndex === -1) {
-        updatedSkills.push({ name: skillName, [field]: value });
-      } else {
-        updatedSkills[skillIndex] = {
-          ...updatedSkills[skillIndex],
-          [field]: value,
-        };
+      const updatedSkills = { ...prevSkills };
+  
+      if (!updatedSkills[skillName]) {
+        updatedSkills[skillName] = { skillName, known: false, level: "nill" };
       }
-
+  
+      if (field === "known") {
+        updatedSkills[skillName].known = value;
+        if (!value) updatedSkills[skillName].level = "nill"; // Reset level if not known
+      } else if (field === "level") {
+        updatedSkills[skillName].level = value || "nill"; // Set to nill if no level is selected
+      }
+  
       return updatedSkills;
     });
   };
+  
+  
   // Handle the submit
   const handleSubmit = async () => {
-    
-    const requestData = {
-      careerGoalName: userdata.careerGoalName,
-      levelName: userdata.levelName,
-      subLevelName: userdata.subLevelName,
-      skills: selectedSkills.map((skill) => ({
-        name: skill.name,
-        known: skill.known,
-        level: skill.level,
-      })),
+    const allSkillsPayload = skills.map((skill) => ({
+      skillName: skill,
+      known: selectedSkills[skill]?.known || false,
+      level: selectedSkills[skill]?.known ? selectedSkills[skill].level : "nill",
+    }));
+  
+    const payload = {
+      careerGoal: userdata.careerGoalName,
+      level: userdata.levelName,
+      subLevel: userdata.subLevelName,
+      skills: allSkillsPayload,
     };
-    console.log(requestData)
-
+  
     try {
-      const response = await fetch("https://fakeurl.com/submit", {
-        // Replace with the actual endpoint
-        method: "POST",
+      console.log(payload);
+      const response = await fetch(`/user/career/${user._id}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(requestData),
+        body: JSON.stringify(payload),
       });
+  
       const data = await response.json();
-      console.log("Response:", data);
-      // Handle successful submission (show a message, clear form, etc.)
+      if (response.ok) {
+        // console.log("Career details updated:", data);
+      } else {
+        console.error("Error updating career details:", data.message);
+      }
     } catch (error) {
-      console.error("Error submitting data:", error);
-      // Handle errors during submission
+      console.error("Error updating career details:", error);
     }
   };
+  
+  
+  
 
   return (
     <div className="flex flex-col">
@@ -276,7 +284,8 @@ const CareerGoalSelection = () => {
       {/* Submit Button */}
       <button
         onClick={handleSubmit}
-        className="bg-blue-500 text-white p-2 rounded mt-4"
+        disabled={skills.length===0}
+        className="bg-blue-500 disabled:opacity-80 text-white p-2 rounded mt-4"
       >
         Submit
       </button>
