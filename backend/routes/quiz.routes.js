@@ -1,12 +1,8 @@
 const express = require('express');
-const { getQuizByCareerGoal, submitQuizResults } = require('../controllers/quiz.controller');
-
 const router = express.Router();
+const {getQuizBySkillAndLevel}=require('../controllers/quiz.controller')
 
-// Route to get quiz based on career goal
-router.get('/quiz/:careerGoal', getQuizByCareerGoal);
-
-// Route to submit quiz results
-router.post('/submitQuizResults', submitQuizResults);
+// Route to get questions by title and level
+router.get('/quiz/questions', getQuizBySkillAndLevel);
 
 module.exports = router;

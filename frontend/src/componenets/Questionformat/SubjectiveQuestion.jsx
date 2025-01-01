@@ -1,22 +1,15 @@
-// src/components/SubjectiveQuestion.js
-import React, { useState } from 'react';
+import React from 'react';
 
-const SubjectiveQuestion = ({ question, index }) => {
-  const [answer, setAnswer] = useState('');
-
-  const handleAnswerChange = (e) => {
-    setAnswer(e.target.value);
-  };
-
+const SubjectiveQuestion = ({ questionIndex, question, onAnswerChange }) => {
   return (
-    <div className="bg-white shadow-lg rounded-lg p-4">
-      <h3 className="text-lg font-medium mb-4">{question.questionText}</h3>
+    <div className="mb-6 p-4 border-2 border-gray-300 rounded-lg shadow-sm">
+      <p className="font-semibold text-lg my-3">{question.question}</p>
       <textarea
-        value={answer}
-        onChange={handleAnswerChange}
-        className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-        rows="4"
         placeholder="Write your answer here..."
+        rows={5}
+        className="w-full p-4 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 ease-in-out resize-none"
+        value={question.answer || ''}
+        onChange={(e) => onAnswerChange(questionIndex, e.target.value)}
       />
     </div>
   );

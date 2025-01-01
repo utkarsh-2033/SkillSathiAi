@@ -162,6 +162,7 @@ const user=useSelector(selectUser);
       const data = await response.json();
       if (response.ok) {
         // console.log("Career details updated:", data);
+        setError("Career Goal selected and saved.")
       } else {
         console.error("Error updating career details:", data.message);
       }
@@ -285,7 +286,7 @@ const user=useSelector(selectUser);
       <button
         onClick={handleSubmit}
         disabled={skills.length===0}
-        className="bg-blue-500 disabled:opacity-80 text-white p-2 rounded mt-4"
+        className="bg-blue-500 disabled:opacity-70 text-white p-2 rounded mt-4"
       >
         Submit
       </button>

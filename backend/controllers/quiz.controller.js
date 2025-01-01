@@ -1,54 +1,40 @@
-
-
 const Quiz = require('../models/quiz.model');
 
-const getQuizByCareerGoal = async (req, res) => {
+const getQuizBySkillAndLevel = async (req, res) => {
   try {
-    const { careerGoal } = req.params;
-    const quiz = await Quiz.findOne({ careerGoal });
+    const { title } = req.query;
+    const level = req.query.level.trim(); 
 
-    if (!quiz) {
-      return res.status(404).json({ message: 'Quiz not found for this career goal' });
+
+    if (!title || !level) {
+      return res.status(400).json({ error: 'Title and level are required.' });
     }
 
-    return res.json(quiz);
+    // Find the quiz by title
+    const quiz = await Quiz.findOne({ title });
+
+    if (!quiz) {
+      return res.status(404).json({ error: 'Quiz not found.' });
+    }
+
+    // Fetch questions based on the level
+    // console.log(quiz.levels["easy"]);
+    const questions = quiz.levels[level];
+
+    if (!questions || questions.length === 0) {
+      return res.status(404).json({ error: 'No questions found for the specified level.' });
+    }
+
+    res.status(200).json({ questions });
   } catch (error) {
-    return res.status(500).json({ message: 'Error fetching quiz data', error });
+    console.error('Error fetching questions:', error);
+    res.status(500).json({ error: 'Internal server error.' });
   }
 };
 
-const submitQuizResults = async (req, res) => {
-  try {
-    const { userId, quizResponses } = req.body; // `quizResponses` is an array of user's answers
-    
-    // Fetch the quiz questions from the database
-    const quiz = await Quiz.findOne({ careerGoal: quizResponses.careerGoal });
 
-    if (!quiz) {
-      return res.status(404).json({ message: 'Quiz not found' });
-    }
-
-    // Evaluate the quiz answers
-    let score = 0;
-    quiz.questions.forEach((question, index) => {
-      const userAnswer = quizResponses.answers[index];
-      if (userAnswer === question.correctAnswer) {
-        score++;
-      }
-    });
-
-    // Store the user's result (you can save it in a results collection or user model)
-    // For now, just returning the score
-    return res.json({ score, totalQuestions: quiz.questions.length });
-  } catch (error) {
-    return res.status(500).json({ message: 'Error submitting quiz results', error });
-  }
-};
 
 module.exports = {
-  getQuizByCareerGoal,
-  submitQuizResults,
+  getQuizBySkillAndLevel,
+  
 };
-
-
-// module.exports = { getQuizcontroller , postquizcontroller };

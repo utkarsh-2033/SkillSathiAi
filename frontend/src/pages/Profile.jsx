@@ -127,6 +127,7 @@ const Profile = () => {
   }
 
   return (
+    <div>
     <div className="max-w-5xl flex flex-col sm:flex-row gap-8  m-auto mt-5 p-8 pt-2 bg-white rounded-md shadow-lg">
       <div className="flex flex-col sm:flex-1">
         <input
@@ -232,7 +233,10 @@ const Profile = () => {
       <div className="sm: flex-1">
         <CareerGoalsSelection/>
       </div>
-      
+    </div>
+    <div className="text-center">
+      {user.careerDetails.skills.length>0 &&<button onClick={()=>{navigate('/skill-assessment')}} className="bg-purple-500 font-semibold mt-5 p-2 rounded-lg">Start Skill Assessment</button>}
+    </div>
     </div>
   );
 };
