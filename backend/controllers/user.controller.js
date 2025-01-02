@@ -87,11 +87,11 @@ const updateCareerDetails = async (req, res) => {
   }
 };
 
-const saveQuizResult = async (req, res) => {
+const saveQuizResult = async(req, res) => {
   try {
     const id=req.params.id;
-    console.log("reached here");
-    console.log(req.body);
+    // console.log("reached here");
+    // console.log(req.body);
     const { userId, skillName, level, score, timeTaken, isPassed } = req.body;
 
     // Find the user
@@ -120,10 +120,39 @@ const saveQuizResult = async (req, res) => {
   }
 };
 
+const getProgress=async (req, res) => {
+  try {
+    let { userId } = req.params;
+    userId = userId.trim();
+    // console.log(userId)
+
+    // Find user and return only the progress field
+    const user = await User.findById(userId, "progress");
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Convert progress array to an easier-to-consume format
+    const progressMap = {};
+    user.progress.forEach(({ skillName, level }) => {
+      if (!progressMap[skillName]) {
+        progressMap[skillName] = {};
+      }
+      progressMap[skillName][level] = true; // Mark level as completed
+    });
+
+    return res.status(200).json(progressMap);
+  } catch (error) {
+    console.error("Error fetching progress:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+}
+
 module.exports = {
   logoutuserhandler,
   deleteusercontroller,
   updateprofilecontroller,
   updateCareerDetails,
-  saveQuizResult
+  saveQuizResult,
+  getProgress
 };
