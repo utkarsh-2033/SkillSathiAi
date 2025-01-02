@@ -32,9 +32,41 @@ const getQuizBySkillAndLevel = async (req, res) => {
   }
 };
 
+// Save a new quiz
+const saveQuiz = async (req, res) => {
+  const { title, level, question } = req.body;
+
+  if (!title || !level || !question) {
+    return res.status(400).json({ error: "Missing required fields: title, level, or question." });
+  }
+
+  try {
+    const quiz = await Quiz.findOne({ title });
+
+    if (!quiz) {
+      return res.status(404).json({ error: "Quiz not found." });
+    }
+
+    if (!quiz.levels[level]) {
+      return res.status(400).json({ error: `Level '${level}' does not exist in the quiz.` });
+    }
+
+    quiz.levels[level].push(question);
+
+    await quiz.save();
+
+    res.status(200).json({ message: "Question added successfully." });
+  } catch (error) {
+    console.error("Error adding question:", error);
+    res.status(500).json({ error: "Internal server error." });
+  }
+}
+
+
 
 
 module.exports = {
   getQuizBySkillAndLevel,
+  saveQuiz
   
 };
