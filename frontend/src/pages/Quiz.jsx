@@ -5,6 +5,9 @@ import SubjectiveQuestion from "../componenets/Questionformat/SubjectiveQuestion
 import ProgressBar from "../componenets/Quiz/ProgressBar";
 import FormatTimer from "../componenets/Quiz/FormatTimer";
 import QuestionNavigation from "../componenets/Quiz/QustionNavigation";
+import QuizResult from "../componenets/Quiz/QuizResult";
+import { selectUser } from "../redux/slices/userSlice";
+import { useSelector } from "react-redux";
 
 const Quiz = () => {
   const { skillname } = useParams();
@@ -16,6 +19,21 @@ const Quiz = () => {
   const [quizStartTime, setQuizStartTime] = useState(Date.now());
   const [isCompleted, setIsCompleted] = useState(false);
   const [isTimerStopped, setIsTimerStopped] = useState(false);
+  const [difficultyAverage, setDifficultyAverage] = useState(0);
+
+  const user = useSelector(selectUser);
+  // Function to calculate average difficulty
+  useEffect(() => {
+    if (questions && questions.length > 0) {
+      const totalDifficulty = questions.reduce(
+        (sum, question) => sum + question.difficulty_index,
+        0
+      );
+      const avgDifficulty = totalDifficulty / questions.length;
+      setDifficultyAverage(avgDifficulty.toFixed(2)); // Rounded to 2 decimal places
+    }
+  }, [questions]);
+  console.log(difficultyAverage);
 
   // Fetch the level from the query string (default to "easy")
   const queryParams = new URLSearchParams(location.search);
@@ -60,9 +78,36 @@ const Quiz = () => {
     setCurrentQuestionIndex(index);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setIsCompleted(true);
     setIsTimerStopped(true);
+    const resultData = {
+      userId: user._id,
+      skillName: skillname,
+      level,
+      score: calculateScore(),
+      timeTaken: calculateTimeTaken(),
+      isPassed: calculateScore() > 7,
+    };
+    console.log(resultData);
+
+    try {
+      const res = await fetch(`/user/saveQuizResult/${user._id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(resultData),
+      });
+      const data=await res.json();
+      if(res.ok){
+        console.log(data)
+      }else{
+        console.log("error in saving result")
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleQuizLevel = () => {
@@ -72,7 +117,6 @@ const Quiz = () => {
       navigate(`/quiz/${skillname}?level=advanced`);
     }
   };
-  
 
   const calculateTimeTaken = () => {
     return ((Date.now() - quizStartTime) / 1000).toFixed(2); // Time in seconds
@@ -114,39 +158,14 @@ const Quiz = () => {
       )}
 
       {isCompleted ? (
-        <div className="bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-500 text-white rounded-lg shadow-lg p-8 max-w-lg mx-auto mt-8">
-          <div className="text-center">
-            <h3 className="text-3xl font-extrabold mb-4">Quiz Completed!</h3>
-            <p className="text-lg mb-2">
-              Total Score:{" "}
-              <span className="text-yellow-300">
-                {calculateScore()} / {questions.length}
-              </span>
-            </p>
-            <p className="text-lg mb-4">
-              Total Time:{" "}
-              <span className="text-yellow-300">
-                {calculateTimeTaken()} seconds
-              </span>
-            </p>
-            {level !== "advanced" && (
-              <button
-                onClick={handleQuizLevel}
-                className="px-8 my-2 py-3 bg-green-600 text-gray-800 rounded-full shadow-md hover:bg-green-400 transition duration-300 ease-in-out transform hover:scale-105"
-              >
-                {level === "easy"
-                  ? "Go to Intermediate level"
-                  : "Go to Advance level"}
-              </button>
-            )}
-            <button
-              onClick={() => navigate("/skill-assessment")}
-              className="px-8 py-3 bg-yellow-400 text-gray-800 rounded-full shadow-md hover:bg-yellow-500 transition duration-300 ease-in-out transform hover:scale-105"
-            >
-              Go Back to Skill Assessment
-            </button>
-          </div>
-        </div>
+        <QuizResult
+          score={calculateScore()}
+          totalQuestions={questions.length}
+          totalTime={calculateTimeTaken()}
+          level={level}
+          onNextLevel={handleQuizLevel}
+          skillname={skillname}
+        />
       ) : (
         <div>
           <div className="mb-4">

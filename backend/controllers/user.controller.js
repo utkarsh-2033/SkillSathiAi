@@ -87,9 +87,43 @@ const updateCareerDetails = async (req, res) => {
   }
 };
 
+const saveQuizResult = async (req, res) => {
+  try {
+    const id=req.params.id;
+    console.log("reached here");
+    console.log(req.body);
+    const { userId, skillName, level, score, timeTaken, isPassed } = req.body;
+
+    // Find the user
+    const user = await User.findById(id);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Update progress
+    const newProgress = {
+      skillName,
+      level,
+      testScore: score,
+      timeTaken,
+      dateTimeGiven: new Date(),
+      isPassed,
+    };
+
+    user.progress.push(newProgress); // Add new progress entry
+    await user.save();
+
+    res.status(200).json({ message: "Quiz result saved successfully", progress: user.progress });
+  } catch (error) {
+    res.status(500).json({ message: "Error saving quiz result", error: error.message });
+  }
+};
+
 module.exports = {
   logoutuserhandler,
   deleteusercontroller,
   updateprofilecontroller,
-  updateCareerDetails
+  updateCareerDetails,
+  saveQuizResult
 };

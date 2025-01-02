@@ -41,5 +41,15 @@ const userSchema = new mongoose.Schema({
       },
     ],
   },
+  progress: [
+    {
+      skillName: { type: String, required: true },
+      level: { type: String, required: true },
+      testScore: { type: Number, required: true },
+      timeTaken: { type: Number, required: true }, // in seconds
+      dateTimeGiven: { type: Date, default: Date.now },
+      isPassed: { type: Boolean, required: true },
+    },
+  ],
 });
 module.exports = mongoose.model("User", userSchema);

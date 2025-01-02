@@ -7,8 +7,11 @@ import Profile from "./pages/Profile";
 import PrivateProfile from "./componenets/PrivateProfile";
 import SkillAssessment from './pages/skill-assessment'
 import Quiz from "./pages/Quiz";
+import Footer from "./componenets/Footer";
 function App() {
   return (
+    <div className="flex flex-col min-h-screen">
+
     <BrowserRouter>
       <Navbar />
       <Routes>
@@ -22,6 +25,8 @@ function App() {
         </Route>
       </Routes>
     </BrowserRouter>
+      <Footer/>
+    </div>
   );
 }
 
