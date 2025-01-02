@@ -1,7 +1,42 @@
 import React, { useState } from "react";
+import { useEffect } from "react";
+import { selectUser } from "../../redux/slices/userSlice";
+import { useSelector } from "react-redux";
 
-const SkillAssessmentIntro = ({ careerGoal, level, subLevel, skills, onSkillSelect }) => {
-  const [selectedSkill, setSelectedSkill] = useState(null); // Track which skill is clicked
+const SkillAssessmentIntro = ({
+  careerGoal,
+  level,
+  subLevel,
+  skills,
+  onSkillSelect,
+}) => {
+  const [selectedSkill, setSelectedSkill] = useState(null);
+  const [progress, setProgress] = useState({});
+  const user = useSelector(selectUser);
+  const userId=user._id;
+  // Function to fetch progress data
+  const fetchUserProgress = async (userId) => {
+    try {
+      const response = await fetch(`user/api/progress/${userId}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch progress data");
+      }
+      const data = await response.json();
+      return data; // Progress map (skillName -> level -> true/false)
+    } catch (error) {
+      console.error("Error fetching progress:", error);
+      return {}; // Default empty progress
+    }
+  };
+
+  // Load progress data on component mount
+  useEffect(() => {
+    const loadProgress = async () => {
+      const progressData = await fetchUserProgress(userId);
+      setProgress(progressData);
+    };
+    loadProgress();
+  }, [userId]);
 
   const handleSkillClick = (skillName) => {
     // Toggle the selected skill: if already selected, close the level options
@@ -25,7 +60,8 @@ const SkillAssessmentIntro = ({ careerGoal, level, subLevel, skills, onSkillSele
       {/* Introductory Message */}
       <div className="text-center text-gray-700 mb-6">
         <p className="text-lg text-green-800 font-semibold">
-          Let's test your proficiency in your current skills and identify any skill gaps!
+          Let's test your proficiency in your current skills and identify any
+          skill gaps!
         </p>
       </div>
 
@@ -44,16 +80,32 @@ const SkillAssessmentIntro = ({ careerGoal, level, subLevel, skills, onSkillSele
               {/* Level options visible if the skill is selected */}
               {selectedSkill === skill.skillName && (
                 <div className="absolute mt-2 w-full bg-white shadow-lg rounded-md z-10 p-4">
-                  <p className="text-gray-600 text-center mb-4">Select Skill Level:</p>
-                  {["Easy", "Intermediate", "Advanced"].map((levelOption) => (
-                    <button
-                      key={levelOption}
-                      className="block w-full text-center text-white bg-blue-500 hover:bg-blue-600 py-2 px-4 rounded-md mb-2"
-                      onClick={() => handleLevelClick(skill.skillName, levelOption.toLowerCase())} // Pass skill and level to onSkillSelect
-                    >
-                      {levelOption}
-                    </button>
-                  ))}
+                  <p className="text-gray-600 text-center mb-4">
+                    Select Skill Level:
+                  </p>
+                  {["Easy", "Intermediate", "Advanced"].map((level) => {
+                    const isCompleted =
+                      progress[skill.skillName]?.[level.toLowerCase()] || false;
+
+                    return (
+                      <button
+                        key={level}
+                        className={`block w-full text-center py-2 px-4 rounded-md mb-2 ${
+                          isCompleted
+                            ? "bg-green-500 hover:bg-green-600 text-white" // Highlight completed levels
+                            : "bg-blue-500 hover:bg-blue-600 text-white"
+                        }`}
+                        onClick={() =>
+                          handleLevelClick(skill.skillName, level.toLowerCase())
+                        }
+                      >
+                        {level}
+                        {isCompleted && (
+                          <span className="ml-2">✔️</span> // Checkmark
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -61,7 +113,8 @@ const SkillAssessmentIntro = ({ careerGoal, level, subLevel, skills, onSkillSele
         </div>
       ) : (
         <p className="text-center text-gray-500 mt-6">
-          No skills available for assessment. Add skills to your profile to get started.
+          No skills available for assessment. Add skills to your profile to get
+          started.
         </p>
       )}
     </div>
