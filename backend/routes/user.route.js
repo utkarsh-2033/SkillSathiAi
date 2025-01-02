@@ -1,19 +1,29 @@
-const express = require('express');
-const { deleteusercontroller, logoutuserhandler, updateprofilecontroller,updateCareerDetails ,saveQuizResult, getProgress } = require('../controllers/user.controller.js');
-const verifyUser  = require('../utils/verifyUser.js');
+const express = require("express");
+const {
+  deleteusercontroller,
+  logoutuserhandler,
+  updateprofilecontroller,
+  updateCareerDetails,
+  saveQuizResult,
+  getProgress,
+  getLatestProgress,
+} = require("../controllers/user.controller.js");
+const verifyUser = require("../utils/verifyUser.js");
 
-const router=express.Router();
+const router = express.Router();
 
-router.post('/updateprofile/:id',verifyUser,updateprofilecontroller)
+router.post("/updateprofile/:id", verifyUser, updateprofilecontroller);
 
-router.delete('/deleteuser/:id',verifyUser,deleteusercontroller);
+router.delete("/deleteuser/:id", verifyUser, deleteusercontroller);
 
-router.post('/logout',logoutuserhandler);
+router.post("/logout", logoutuserhandler);
 
-router.put("/career/:id",verifyUser, updateCareerDetails);
+router.put("/career/:id", verifyUser, updateCareerDetails);
 
 router.post("/saveQuizResult/:id", saveQuizResult);
 
 router.get("/api/progress/:userId", getProgress);
+
+router.get("/api/quiz-progress/:userId", getLatestProgress);
 
 module.exports = router;

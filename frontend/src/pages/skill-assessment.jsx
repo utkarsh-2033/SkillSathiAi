@@ -16,18 +16,23 @@ const SkillAssessmentPage = () => {
   // Filter "known" skills
   const knownSkills = skills.filter((skill) => skill.known);
 
-  const handleSkillSelect = (skillName,quizLevel) => {
+  const handleSkillSelect = (skillName, quizLevel) => {
     setSelectedSkill(skillName);
     // console.log(`Skill selected for quiz: ${skillName}`);
-    
-    // Navigating to the quiz page with query parameters
-    navigate(`/quiz/${skillName}?level=${quizLevel}`); 
-  };
 
+    // Navigating to the quiz page with query parameters
+    navigate(`/quiz/${skillName}?level=${quizLevel}`);
+  };
+  const handleNavigateToSkillGap = () => {
+    // Navigating to the new page for skill gap identification
+    navigate("/skill-gap-identification");
+  };
   return (
     <div className="min-h-screen bg-gray-100 p-4">
       <header className="bg-blue-600 text-white p-4 rounded-md shadow-md">
-        <h1 className="text-3xl font-bold text-center">Skill Assessment Quiz</h1>
+        <h1 className="text-3xl font-bold text-center">
+          Skill Assessment Quiz
+        </h1>
       </header>
 
       <SkillAssessmentIntro
@@ -37,6 +42,15 @@ const SkillAssessmentPage = () => {
         skills={knownSkills}
         onSkillSelect={handleSkillSelect}
       />
+      <div className="mt-6 flex justify-center gap-6">
+        {/* Button to navigate to Skill Gap Identification */}
+        <button
+          onClick={handleNavigateToSkillGap}
+          className="bg-indigo-600 text-white py-3 px-6 rounded-lg shadow-lg hover:bg-indigo-700 transition-all"
+        >
+          View Today's Quiz Results
+        </button>
+      </div>
     </div>
   );
 };

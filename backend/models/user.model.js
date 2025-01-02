@@ -47,6 +47,7 @@ const userSchema = new mongoose.Schema({
       level: { type: String, required: true },
       testScore: { type: Number, required: true },
       timeTaken: { type: Number, required: true }, // in seconds
+      avgDifficulty:{type:Number,required:true},
       dateTimeGiven: { type: Date, default: Date.now },
       isPassed: { type: Boolean, required: true },
     },

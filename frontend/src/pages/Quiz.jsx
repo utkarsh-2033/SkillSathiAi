@@ -33,7 +33,7 @@ const Quiz = () => {
       setDifficultyAverage(avgDifficulty.toFixed(2)); // Rounded to 2 decimal places
     }
   }, [questions]);
-  console.log(difficultyAverage);
+  // console.log(difficultyAverage);
 
   // Fetch the level from the query string (default to "easy")
   const queryParams = new URLSearchParams(location.search);
@@ -87,6 +87,7 @@ const Quiz = () => {
       level,
       score: calculateScore(),
       timeTaken: calculateTimeTaken(),
+      avgDifficulty:difficultyAverage,
       isPassed: calculateScore() > 7,
     };
     console.log(resultData);

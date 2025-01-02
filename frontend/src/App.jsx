@@ -9,6 +9,7 @@ import SkillAssessment from "./pages/skill-assessment";
 import Quiz from "./pages/Quiz";
 import Footer from "./componenets/Footer";
 import AdminPanel from "./pages/admin";
+import SkillGapIdentificationPage from './pages/SkillGapIdentification'
 function App() {
   return (
     <div className="flex flex-col min-h-screen">
@@ -23,6 +24,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/skill-assessment" element={<SkillAssessment />} />
             <Route path="/quiz/:skillname" element={<Quiz />} />
+            <Route path="skill-gap-identification" element={<SkillGapIdentificationPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
