@@ -216,6 +216,56 @@ const getLatestProgress = async (req, res) => {
   }
 };
 
+const saveSkillAssessment = async (req, res) => {
+  const { userId } = req.params;
+  const skillAssessment = req.body;
+
+  const updatedresult = {
+    ...skillAssessment,
+    dateTimeGiven: new Date(),
+  };
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.skillProficiencyAssessment.push(updatedresult);
+    await user.save();
+
+    res
+      .status(200)
+      .json({ message: "Skill proficiency assessment saved successfully." });
+  } catch (error) {
+    console.error("Error saving skill assessment:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const postSkillAssessmentFeedback = async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    const user = await User.findById(userId);
+
+    if (!user || !user.skillProficiencyAssessment || user.skillProficiencyAssessment.length === 0) {
+      return res.status(404).json({ message: 'No skill assessment data found for this user.' });
+    }
+
+    // Sort the assessments by the latest dateTimeGiven and get the latest entry
+    const latestAssessment = user.skillProficiencyAssessment.sort((a, b) => {
+      return new Date(b.dateTimeGiven) - new Date(a.dateTimeGiven); // Sort in descending order
+    })[0];
+
+    res.status(200).json(latestAssessment); // Send the latest assessment data
+    // console.log(latestAssessment);
+
+  } catch (error) {
+    console.error('Error fetching skill assessment feedback:', error);
+    res.status(500).json({ message: 'Server error while fetching skill assessment feedback.' });
+  }
+}
+
 module.exports = {
   logoutuserhandler,
   deleteusercontroller,
@@ -224,4 +274,6 @@ module.exports = {
   saveQuizResult,
   getProgress,
   getLatestProgress,
+  saveSkillAssessment,
+  postSkillAssessmentFeedback
 };

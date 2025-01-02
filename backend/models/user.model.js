@@ -51,6 +51,23 @@ const userSchema = new mongoose.Schema({
       dateTimeGiven: { type: Date, default: Date.now },
       isPassed: { type: Boolean, required: true },
     },
+    
   ],
+  skillProficiencyAssessment: {
+    type: [
+      {
+        input_data: {
+          difficulty_avg: [Number],
+          level: [String],
+          score: [Number],
+          skill_name: [String],
+          time_taken_avg: [Number],
+        },
+        predictions: [Number],
+        dateTimeGiven: { type: Date, default: Date.now },
+      },
+    ],
+    default: [],
+  },
 });
 module.exports = mongoose.model("User", userSchema);

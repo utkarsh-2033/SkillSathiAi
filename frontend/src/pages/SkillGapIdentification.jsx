@@ -65,7 +65,7 @@ const SkillGapIdentificationPage = () => {
 
     // Simulate sending data to backend
     console.log("Sending data for proficiency testing:", data);
-    console.log(data)
+    console.log(data);
     // Add your backend request here to send the data for processing
     fetch("http://127.0.0.1:5000/predict", {
       method: "POST",
@@ -78,7 +78,30 @@ const SkillGapIdentificationPage = () => {
       .then((result) => {
         console.log("Data sent successfully:", result);
         setIsSending(false);
-        // alert("Data sent successfully for processing.");
+
+        // Save the ML response to the user database
+        fetch(`/user/api/save-skill-assessment/${user._id}`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(result),
+        })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Failed to save skill proficiency assessment.");
+            }
+            return response.json();
+          })
+          .then((saveResponse) => {
+            console.log(saveResponse.message);
+            alert("Skill proficiency assessment saved successfully!");
+            navigate('/skill-assessment-feedback')
+          })
+          .catch((error) => {
+            console.error("Error saving skill assessment:", error);
+            alert("Error saving skill proficiency assessment.");
+          });
       })
       .catch((error) => {
         console.error("Error sending data:", error);
@@ -105,7 +128,9 @@ const SkillGapIdentificationPage = () => {
                 </h3>
                 <p className="text-sm text-gray-600 mt-1">
                   Level:{" "}
-                  <span className="font-medium text-blue-500">{progress.level}</span>
+                  <span className="font-medium text-blue-500">
+                    {progress.level}
+                  </span>
                 </p>
                 <div className="mt-4">
                   <p className="font-medium text-gray-800">
@@ -120,7 +145,9 @@ const SkillGapIdentificationPage = () => {
                   </p>
                   <p className="font-medium text-gray-800">
                     Average Difficulty:{" "}
-                    <span className="text-blue-500">{progress.difficulty || 3}</span>
+                    <span className="text-blue-500">
+                      {progress.difficulty || 3}
+                    </span>
                   </p>
                   <p
                     className={`font-medium mt-4 ${

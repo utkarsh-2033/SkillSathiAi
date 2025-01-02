@@ -7,6 +7,8 @@ const {
   saveQuizResult,
   getProgress,
   getLatestProgress,
+  saveSkillAssessment,
+  postSkillAssessmentFeedback,
 } = require("../controllers/user.controller.js");
 const verifyUser = require("../utils/verifyUser.js");
 
@@ -25,5 +27,9 @@ router.post("/saveQuizResult/:id", saveQuizResult);
 router.get("/api/progress/:userId", getProgress);
 
 router.get("/api/quiz-progress/:userId", getLatestProgress);
+
+router.post("/api/save-skill-assessment/:userId", saveSkillAssessment);
+
+router.get("/api/skill-assessment-feedback/:userId", postSkillAssessmentFeedback);
 
 module.exports = router;
