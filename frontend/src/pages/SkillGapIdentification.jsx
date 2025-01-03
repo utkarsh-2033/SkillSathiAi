@@ -67,7 +67,7 @@ const SkillGapIdentificationPage = () => {
     console.log("Sending data for proficiency testing:", data);
     console.log(data);
     // Add your backend request here to send the data for processing
-    fetch("http://127.0.0.1:5000/predict", {
+    fetch("http://127.0.0.1:5001/predict", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -256,7 +256,7 @@ const postSkillAssessmentFeedback = async (req, res) => {
     const latestAssessment = user.skillProficiencyAssessment.sort((a, b) => {
       return new Date(b.dateTimeGiven) - new Date(a.dateTimeGiven); // Sort in descending order
     })[0];
-
+    // console.log(latestAssessment)
     res.status(200).json(latestAssessment); // Send the latest assessment data
     // console.log(latestAssessment);
 

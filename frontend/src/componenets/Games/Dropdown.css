@@ -1,0 +1,77 @@
+.subject-dropdown-container {
+    border-radius: 8px;
+    border-style: none;
+    color: rgb(58, 47, 47);
+    cursor: pointer;
+    flex-shrink: 0;
+    font-family: "Inter UI","SF Pro Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Open Sans","Helvetica Neue",sans-serif;
+    font-size: 3px;
+    height: 2.7rem;
+    padding: 0 0.6rem;
+    text-shadow: rgba(0, 0, 0, 0.25) 0 3px 8px;
+    transition: all .5s;
+    touch-action: manipulation;
+    width:800px;
+    display: inline;
+    margin-right: auto;
+   
+  }
+  
+  
+  .subject-dropdown-container h2 {
+    text-align: center;
+    color: #1c1919;
+  }
+  
+  
+  .subject-dropdown-container label {
+    font-size: 16px;
+    font-weight: bold;
+    color:  rgb(58, 47, 47);
+  }
+  
+  
+  .subject-dropdown-container select {
+    width: 200px;
+    padding: 8px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #33333375;
+  }
+  
+  
+  .subject-dropdown-container button {
+    padding: 8px 15px;
+    margin-left: 10px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  
+  .subject-dropdown-container button:hover {
+    background-color: #0056b3;
+  }
+  
+  
+  .subject-dropdown-container ul {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 15px;
+  }
+  
+  
+  .subject-dropdown-container ul li {
+    padding: 8px;
+    background-color: #eef;
+    margin-bottom: 5px;
+    border-radius: 4px;
+    color: #333;
+    font-size: 14px;
+    border: 1px solid #ccc;
+  }
+  
