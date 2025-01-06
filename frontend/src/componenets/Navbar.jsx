@@ -130,10 +130,18 @@ const Navbar2 = () => {
                 </li>
                 <li>
                   <Link
-                    to={`/progress`} // Dynamic route with userId
+                    to='/progress'
                     className="block font-semibold text-lg px-4 py-2 hover:bg-gray-100"
                   >
                     Progress
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to='/admin' 
+                    className="block font-semibold text-lg px-4 py-2 hover:bg-gray-100"
+                  >
+                    Admin
                   </Link>
                 </li>
                 <li>

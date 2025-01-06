@@ -12,7 +12,7 @@ function HomePage() {
         <section className="bg-white py-10 mx-auto lg:mt-8  lg:mr-0 md:space-x-10">
           <div className="container mx-auto px-2 flex flex-col-reverse md:flex-row items-center lg:mb-60 pb-8 lg:space-x-20  ">
             {/* Left Content */}
-            <div className="md:w-1/2 text-center md:text-left shadow-sm lg:w-[40%] ">
+            <div className="md:w-1/2 text-center md:text-left  lg:w-[40%] ">
               <h2 className="text-5xl font-bold mb-6 leading-tight">
                 Empowering Education with{" "}
                 <span className="text-[#5d2294]">AI</span>

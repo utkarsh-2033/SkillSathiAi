@@ -33,7 +33,6 @@ function App() {
             <Route path="/progress" element={<ProgressPage />} />
             <Route path="/skill-assessment" element={<SkillAssessment />} />
             <Route path="/quiz/:skillname" element={<Quiz />} />
-            {/* <Route path="/progress/:userId" element={<ProgressPage/>}/> */}
             <Route path="/skillQuiz" element={<SkillQuiz />}/>
             <Route path="/skill-gap-identification" element={<SkillGapIdentificationPage />} />
             <Route path="/skill-assessment-feedback" element={<SkillAssessmentFeedbackPage />} />
