@@ -1,5 +1,6 @@
 const User = require("../models/user.model.js");
 const bcrypt = require("bcrypt");
+const { spawn } = require("child_process");
 
 const updateprofilecontroller = async (req, res, next) => {
   const userId = req.params.id;
@@ -252,19 +253,113 @@ const postSkillAssessmentFeedback = async (req, res) => {
       return res.status(404).json({ message: 'No skill assessment data found for this user.' });
     }
 
-    // Sort the assessments by the latest dateTimeGiven and get the latest entry
     const latestAssessment = user.skillProficiencyAssessment.sort((a, b) => {
-      return new Date(b.dateTimeGiven) - new Date(a.dateTimeGiven); // Sort in descending order
+      return new Date(b.dateTimeGiven) - new Date(a.dateTimeGiven);
     })[0];
+
+    // Prepare arguments for the Python script
+    const args = latestAssessment.input_data.skill_name.map((skill, index) => {
+      return [
+        latestAssessment.input_data.skill_name[index],
+        latestAssessment.input_data.level[index],
+        latestAssessment.predictions[index],
+        latestAssessment.input_data.score[index],
+        'Need Improvement' // Example criteria
+      ];
+    });
+
+    // Loop through each skill quiz and call the Python script
+    const feedbackPromises = args.map((argArray) => {
+      return new Promise((resolve, reject) => {
+        const pythonProcess = spawn('python', ['../backend/MLmodel/detailedfeedback.py', ...argArray]);
+
+        let output = '';
+        let errorOutput = '';
+
+        pythonProcess.stdout.on('data', (data) => {
+          output += data.toString();
+        });
+
+        pythonProcess.stderr.on('data', (data) => {
+          errorOutput += data.toString();
+        });
+
+        pythonProcess.on('close', (code) => {
+          if (code === 0) {
+            resolve(output);
+          } else {
+            reject(new Error(`Python process exited with code ${code}: ${errorOutput}`));
+          }
+        });
+      });
+    });
+
+    const feedbackResults = await Promise.all(feedbackPromises);
     // console.log(latestAssessment)
-    res.status(200).json(latestAssessment); // Send the latest assessment data
-    // console.log(latestAssessment);
+    // console.log(feedbackResults)
+    res.status(200).json({ latestAssessment, feedbackResults });
 
   } catch (error) {
     console.error('Error fetching skill assessment feedback:', error);
     res.status(500).json({ message: 'Server error while fetching skill assessment feedback.' });
   }
+};
+
+// Get user progress filtered by the latest test date
+const getFilteredProgress = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+
+    // Fetch user and their progress
+    const user = await User.findById(userId, "progress");
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+
+    // Filter the latest progress per skill
+    const latestProgressMap = {};
+    user.progress.forEach((entry) => {
+      const skill = entry.skillName;
+      if (
+        !latestProgressMap[skill] ||
+        new Date(entry.dateTimeGiven) > new Date(latestProgressMap[skill].dateTimeGiven)
+      ) {
+        latestProgressMap[skill] = entry;
+      }
+    });
+ // Transform the filtered progress map into an array
+ const filteredProgress = Object.values(latestProgressMap);
+
+
+ res.status(200).json(filteredProgress);
+} catch (error) {
+ console.error("Error fetching filtered progress:", error);
+ res.status(500).json({ error: "Internal server error" });
 }
+};
+
+
+const getAllProgress = async (req, res) => {
+  try {
+    const { userId } = req.params;
+console.log(userId);
+    // Fetch user and their progress
+    const user = await User.findById(userId, "progress");
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+
+    // Return all progress records
+    res.status(200).json(user.progress);
+  } catch (error) {
+    console.error("Error fetching all progress:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 
 module.exports = {
   logoutuserhandler,
@@ -275,5 +370,7 @@ module.exports = {
   getProgress,
   getLatestProgress,
   saveSkillAssessment,
-  postSkillAssessmentFeedback
+  postSkillAssessmentFeedback,
+  getAllProgress,
+  getFilteredProgress
 };

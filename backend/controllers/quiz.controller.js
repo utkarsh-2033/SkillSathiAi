@@ -2,14 +2,15 @@ const Quiz = require('../models/quiz.model');
 
 const getQuizBySkillAndLevel = async (req, res) => {
   try {
-    const { title } = req.query;
+    let { title } = req.query;
     const level = req.query.level.trim(); 
 
 
     if (!title || !level) {
       return res.status(400).json({ error: 'Title and level are required.' });
     }
-
+    // tiltle=title.toUpperCase();
+    // console.log(title);
     // Find the quiz by title
     const quiz = await Quiz.findOne({ title });
 
@@ -34,15 +35,16 @@ const getQuizBySkillAndLevel = async (req, res) => {
 
 // Save a new quiz
 const saveQuiz = async (req, res) => {
-  const { title, level, question } = req.body;
+  let { title, level, question } = req.body;
 
   if (!title || !level || !question) {
     return res.status(400).json({ error: "Missing required fields: title, level, or question." });
   }
 
   try {
-    const quiz = await Quiz.findOne({ title });
-
+    const quiz = await Quiz.findOne({ title: title.toUpperCase() });
+    // title=title.toUpperCase();
+    // console.log(title);
     if (!quiz) {
       return res.status(404).json({ error: "Quiz not found." });
     }
