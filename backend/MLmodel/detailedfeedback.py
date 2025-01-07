@@ -1,7 +1,11 @@
 import sys
 import google.generativeai as genai
+from dotenv import load_dotenv 
+import os 
+load_dotenv() 
+api_key = os.getenv('API_KEY')
 
-genai.configure(api_key="AIzaSyAfxS-lwhIdYxC_bEqImeD5EPKyqDB2_PY")
+genai.configure(api_key=api_key)
 model = genai.GenerativeModel("gemini-1.5-flash")
 
 def get_learning_pathway(skill, level, predicted_proficiency_score, score, feedback_criteria):
