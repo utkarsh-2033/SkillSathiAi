@@ -11,6 +11,7 @@ const {
   postSkillAssessmentFeedback,
   getAllProgress,
   getFilteredProgress,
+  getLearningPathway,
 } = require("../controllers/user.controller.js");
 const verifyUser = require("../utils/verifyUser.js");
 
@@ -37,5 +38,7 @@ router.get("/allprogress/:userId", getAllProgress);
 router.post("/api/save-skill-assessment/:userId", saveSkillAssessment);
 
 router.get("/api/skill-assessment-feedback/:userId", postSkillAssessmentFeedback);
+
+router.get("/api/learning-path-timeline/:id", getLearningPathway);
 
 module.exports = router;

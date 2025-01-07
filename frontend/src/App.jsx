@@ -18,6 +18,7 @@ import CarrierGoal from "./pages/CareerGoal";
 import PuzzleQuiz from "./pages/PuzzleQuiz";
 import SudokuGame from "./pages/Sudoku";
 import ProgressPage from "./pages/ProgressPage";
+import LearningPath from "./pages/LearningPathPage";
 function App() {
   return (
     <div className="flex flex-col min-h-screen">
@@ -41,6 +42,7 @@ function App() {
             <Route path="/games" element={<GameSelectionPage />} />
             <Route path="/game/sudoku" element={<SudokuGame />} />
             <Route path="/game/puzzle-quiz" element={<PuzzleQuiz />} />
+            <Route path="/learning-path-timeline" element={<LearningPath />} />
           </Route>
         </Routes>
       </BrowserRouter>

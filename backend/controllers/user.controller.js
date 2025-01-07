@@ -244,6 +244,62 @@ const saveSkillAssessment = async (req, res) => {
   }
 };
 
+
+// Get user progress filtered by the latest test date
+const getFilteredProgress = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+
+    // Fetch user and their progress
+    const user = await User.findById(userId, "progress");
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+
+    // Filter the latest progress per skill
+    const latestProgressMap = {};
+    user.progress.forEach((entry) => {
+      const skill = entry.skillName;
+      if (
+        !latestProgressMap[skill] ||
+        new Date(entry.dateTimeGiven) > new Date(latestProgressMap[skill].dateTimeGiven)
+      ) {
+        latestProgressMap[skill] = entry;
+      }
+    });
+ // Transform the filtered progress map into an array
+ const filteredProgress = Object.values(latestProgressMap);
+
+
+ res.status(200).json(filteredProgress);
+} catch (error) {
+ console.error("Error fetching filtered progress:", error);
+ res.status(500).json({ error: "Internal server error" });
+}
+};
+
+
+const getAllProgress = async (req, res) => {
+  try {
+    const { userId } = req.params;
+console.log(userId);
+    // Fetch user and their progress
+    const user = await User.findById(userId, "progress");
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+
+    // Return all progress records
+    res.status(200).json(user.progress);
+  } catch (error) {
+    console.error("Error fetching all progress:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 const postSkillAssessmentFeedback = async (req, res) => {
   try {
     const userId = req.params.userId;
@@ -305,60 +361,63 @@ const postSkillAssessmentFeedback = async (req, res) => {
   }
 };
 
-// Get user progress filtered by the latest test date
-const getFilteredProgress = async (req, res) => {
+
+const getLearningPathway = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const userId = req.params.id;
+    const user = await User.findById(userId);
+    console.log(userId);
 
-
-    // Fetch user and their progress
-    const user = await User.findById(userId, "progress");
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      return res.status(404).json({ message: 'user not found.' });
     }
 
+    const careerGoal = user.careerDetails.subLevel && user.careerDetails.subLevel.trim() !== ''
+      ? user.careerDetails.subLevel
+      : user.careerDetails.level;
 
-    // Filter the latest progress per skill
-    const latestProgressMap = {};
-    user.progress.forEach((entry) => {
-      const skill = entry.skillName;
-      if (
-        !latestProgressMap[skill] ||
-        new Date(entry.dateTimeGiven) > new Date(latestProgressMap[skill].dateTimeGiven)
-      ) {
-        latestProgressMap[skill] = entry;
-      }
+    // Convert skills array to comma-separated string
+    const skills = user.careerDetails.skills.map(skill => skill.skillName).join(',');
+    // console.log(skills)
+    // console.log(skills.split(','))
+    // Prepare arguments for the Python script
+    const args = [careerGoal, skills];
+
+    // Call the Python script
+    const getPathwayFeedback = new Promise((resolve, reject) => {
+      const pythonProcess = spawn('python', ['../backend/RecommendationModel/learningpath.py', ...args]);
+
+      let output = '';
+      let errorOutput = '';
+
+      pythonProcess.stdout.on('data', (data) => {
+        output += data.toString();
+      });
+
+      pythonProcess.stderr.on('data', (data) => {
+        errorOutput += data.toString();
+      });
+
+      pythonProcess.on('close', (code) => {
+        if (code === 0) {
+          resolve(output);
+        } else {
+          reject(new Error(`Python process exited with code ${code}: ${errorOutput}`));
+        }
+      });
     });
- // Transform the filtered progress map into an array
- const filteredProgress = Object.values(latestProgressMap);
 
-
- res.status(200).json(filteredProgress);
-} catch (error) {
- console.error("Error fetching filtered progress:", error);
- res.status(500).json({ error: "Internal server error" });
-}
-};
-
-
-const getAllProgress = async (req, res) => {
-  try {
-    const { userId } = req.params;
-console.log(userId);
-    // Fetch user and their progress
-    const user = await User.findById(userId, "progress");
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-
-    // Return all progress records
-    res.status(200).json(user.progress);
+    const learningPathFeedback = await getPathwayFeedback;
+    console.log(learningPathFeedback)
+    res.status(200).json({ careerGoal, skills: skills.split(','), learningPathFeedback });
   } catch (error) {
-    console.error("Error fetching all progress:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error('Error fetching learning path:', error);
+    res.status(500).json({ message: 'Server error while fetching learning path.' });
   }
 };
+
+
+
 
 
 module.exports = {
@@ -371,6 +430,7 @@ module.exports = {
   getLatestProgress,
   saveSkillAssessment,
   postSkillAssessmentFeedback,
+  getLearningPathway,
   getAllProgress,
   getFilteredProgress
 };
