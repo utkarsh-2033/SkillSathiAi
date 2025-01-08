@@ -9,13 +9,13 @@ function HomePage() {
   const navigate = useNavigate();
   const careerDetails = user?.careerDetails || {};
   // console.log(user.careerDetails.length === 0)
-  console.log(careerDetails.skills.length === 0)
+  // console.log(careerDetails.skills.length === 0)
 
 
   const handleGetStarted = () => {
     if (!user) {
       navigate("/signin"); // Redirect to Sign-up page
-    } else if ( careerDetails.skills.length === 0) {
+    } else if (user && careerDetails.skills.length === 0) {
       navigate("/gkquiz"); // Redirect to Career Quiz page
     } else {
       navigate(`/progress/${user._id}`); // Redirect to Progress page
@@ -34,7 +34,7 @@ function HomePage() {
     } else if (
        // careerDetails is undefined/null
       // careerDetails is not an array
-    careerDetails.skills.length === 0 // Array is empty
+    user && careerDetails.skills.length === 0 // Array is empty
       // No object in the array has careerGoal
     ) {
       return "Confused about career goal?";
@@ -71,11 +71,11 @@ function HomePage() {
               >
                 {getStartedButtonText()}
               </button>
-              {careerDetails.skills.length===0 && <button
+              {user && careerDetails.skills.length===0 && <button
                 onClick={handleStarted}
                 className="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white px-6 py-3 rounded-md text-xl font-bold shadow-lg hover:from-purple-600 hover:via-pink-600 hover:to-red-600 transition duration-300 transform hover:scale-105 mb-8"
               >
-                Select Your Career Goal
+                Already decided Your Career Goal
               </button>}
             </div>
           </div>

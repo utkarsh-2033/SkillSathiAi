@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../redux/slices/userSlice";
 import { useNavigate } from "react-router-dom";
 
+
 const SkillGapIdentificationPage = () => {
   const user = useSelector(selectUser);
   const navigate = useNavigate();
@@ -96,7 +97,7 @@ const SkillGapIdentificationPage = () => {
           .then((saveResponse) => {
             console.log(saveResponse.message);
             alert("Skill proficiency assessment saved successfully!");
-            navigate('/skill-assessment-feedback')
+            navigate("/skill-assessment-feedback");
           })
           .catch((error) => {
             console.error("Error saving skill assessment:", error);

@@ -37,21 +37,6 @@ const SkillAssessmentFeedbackPage = () => {
     return formattedText;
   };
 
-  const getFeedback = (predictedProficiencyScore, score) => {
-    if (predictedProficiencyScore < 1.41662 || score < 4.0) {
-      return "Needs Improvement";
-    } else if (
-      predictedProficiencyScore >= 1.41662 &&
-      predictedProficiencyScore < 3.577268 &&
-      score >= 4.0 &&
-      score < 9.0
-    ) {
-      return "Moderate Proficiency";
-    } else {
-      return "Proficient";
-    }
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-r from-green-200 to-blue-200 p-6"> 
       <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">
@@ -84,10 +69,7 @@ const SkillAssessmentFeedbackPage = () => {
                   >
                     <td className="py-3 px-6 text-left">
                       <span className="font-medium text-green-600">
-                        {getFeedback(
-                          skillData.predictions[index],
-                          skillData.input_data.score[index]
-                        )}
+                      {skillData.feedback[index]}
                       </span>
                     </td>
                     <td className="py-3 px-6 text-left font-semibold text-gray-800">

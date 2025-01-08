@@ -29,13 +29,13 @@ const SkillQuiz = () => {
     "Illustrator", "Typography", "Color Theory"
 ];
 
-  const [searchTerm, setSearchTerm] = useState(""); // State for search term
-  const [filteredSkills, setFilteredSkills] = useState(skills); // State for filtered skills
+  const [searchTerm, setSearchTerm] = useState(""); 
+  const [filteredSkills, setFilteredSkills] = useState(skills); 
   const [selectedSkill, setSelectedSkill] = useState(null); // Selected skill
-  const navigate = useNavigate(); // Routing
+  const navigate = useNavigate();
 
   const handleSearchChange = (e) => {
-    e.preventDefault(); // Prevent form submission reload
+    e.preventDefault(); 
     const term = searchTerm.toLowerCase();
     const filtered = skills.filter((skill) =>
       skill.toLowerCase().includes(term)
@@ -48,7 +48,7 @@ const SkillQuiz = () => {
   };
 
   const handleLevelClick = (skillName, quizLevel) => {
-    navigate(`/quiz/${skillName}?level=${quizLevel}`);
+    navigate(`/quiz/${skillName}?level=${quizLevel}`,{ state: { from: 'SkillQuiz' }});
   };
 
   return (

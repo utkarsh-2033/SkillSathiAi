@@ -1,33 +1,42 @@
-import React, { useState } from "react";
+import React, { useState ,useRef,useEffect} from "react";
 import { FaSearch } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { selectUser, logoutUser } from "../redux/slices/userSlice";
-
 
 const Navbar2 = () => {
   const user = useSelector(selectUser);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const DropdownRef =useRef(null);
 
+  const handleClickOutside = (e) => {
+    if (DropdownRef.current && !DropdownRef.current.contains(e.target)) {
+      setDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     console.log("Search submitted");
   };
 
-
   const toggleDropdown = () => {
     setDropdownOpen((prevState) => !prevState);
   };
-
 
   const handleLogout = () => {
     dispatch(logoutUser());
     navigate("/login"); // Redirect to the login page after logout
   };
-
 
   return (
     <header className="bg-gray-700 rounded-md">
@@ -40,7 +49,6 @@ const Navbar2 = () => {
           </p>
         </Link>
 
-
         {/* SkillQuiz Link */}
         <nav>
           <Link to="/skillQuiz">
@@ -48,34 +56,21 @@ const Navbar2 = () => {
               SkillQuiz
             </span>
           </Link>
-          </nav>
-          <nav>
+        </nav>
+        <nav>
           <Link to="/games">
             <span className="font-semibold text-md text-white bg-[#9333ea] hover:bg-purple-600 py-2 px-4 rounded-full shadow-lg">
               Games
             </span>
           </Link>
-
         </nav>
-
-
-        {/* Search Bar
-        <form onSubmit={handleSearchSubmit} className="flex rounded-md bg-slate-300 my-1">
-          <input
-            type="text"
-            aria-label="Search"
-            className="focus:outline-none p-1 bg-transparent w-28 sm:w-64"
-            placeholder="Search..."
-          />
-          <button
-            type="submit"
-            aria-label="Search Button"
-            className="bg-[#9333ea] rounded-full p-2 m-1 text-white"
-          >
-            <FaSearch />
-          </button>
-        </form> */}
-
+        <nav>
+          <Link to="/recommendation">
+            <span className="font-semibold text-md text-white bg-[#9333ea] hover:bg-purple-600 py-2 px-4 rounded-full shadow-lg">
+              Recommendation
+            </span>
+          </Link>
+        </nav>
 
         {/* User Profile Dropdown */}
         <div className="relative">
@@ -99,10 +94,9 @@ const Navbar2 = () => {
             </Link>
           )}
 
-
           {/* Dropdown Menu */}
           {isDropdownOpen && user && (
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-2xl z-50">
+            <div ref={DropdownRef} className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-2xl z-50">
               <ul className="text-gray-700">
                 <li>
                   <Link
@@ -130,7 +124,7 @@ const Navbar2 = () => {
                 </li>
                 <li>
                   <Link
-                    to='/progress'
+                    to="/progress"
                     className="block font-semibold text-lg px-4 py-2 hover:bg-gray-100"
                   >
                     Progress
@@ -138,7 +132,7 @@ const Navbar2 = () => {
                 </li>
                 <li>
                   <Link
-                    to='/admin' 
+                    to="/admin"
                     className="block font-semibold text-lg px-4 py-2 hover:bg-gray-100"
                   >
                     Admin
@@ -161,8 +155,4 @@ const Navbar2 = () => {
   );
 };
 
-
 export default Navbar2;
-
-
-

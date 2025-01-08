@@ -8,8 +8,16 @@ const QuizResult = ({
   level,
   onNextLevel,
   skillname,
+  from,
 }) => {
   const navigate = useNavigate();
+  const navigatehandler = () => {
+    if (from === "SkillQuiz") {
+      navigate("/skillQuiz");
+    } else {
+      navigate("/skill-assessment");
+    }
+  };
 
   return (
     <div className="bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-500 text-white rounded-lg shadow-lg p-8 max-w-lg mx-auto mt-8">
@@ -36,10 +44,12 @@ const QuizResult = ({
           </button>
         )}
         <button
-          onClick={() => navigate("/skill-assessment")}
+          onClick={navigatehandler}
           className="px-8 py-3 bg-yellow-400 text-gray-800 rounded-full shadow-md hover:bg-yellow-500 transition duration-300 ease-in-out transform hover:scale-105"
         >
-          Go Back to Skill Assessment
+          {from !== "SkillQuiz"
+            ? "Go Back to Skill Assessment"
+            : "Go Back to Skills Quiz"}
         </button>
       </div>
     </div>

@@ -21,7 +21,7 @@ const SkillAssessmentPage = () => {
     // console.log(`Skill selected for quiz: ${skillName}`);
 
     // Navigating to the quiz page with query parameters
-    navigate(`/quiz/${skillName}?level=${quizLevel}`);
+    navigate(`/quiz/${skillName}?level=${quizLevel}`,{ state: { from: 'SkillAssessment' }});
   };
   const handleNavigateToSkillGap = () => {
     // Navigating to the new page for skill gap identification

@@ -166,6 +166,7 @@ const Quiz = () => {
           level={level}
           onNextLevel={handleQuizLevel}
           skillname={skillname}
+          from={location.state?.from}
         />
       ) : (
         <div>

@@ -216,16 +216,37 @@ const getLatestProgress = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+const getFeedback = (predictedProficiencyScore, score) => {
+  if (predictedProficiencyScore < 1.41662 || score < 4.0) {
+    return "Needs Improvement";
+  } else if (
+    predictedProficiencyScore >= 1.41662 &&
+    predictedProficiencyScore < 3.577268 &&
+    score >= 4.0 &&
+    score < 9.0
+  ) {
+    return "Moderate Proficiency";
+  } else {
+    return "Proficient";
+  }
+};
 
 const saveSkillAssessment = async (req, res) => {
   const { userId } = req.params;
   const skillAssessment = req.body;
-
+  // Add feedback property to each prediction
+  const feedback = skillAssessment.predictions.map(
+    (predictedProficiencyScore, index) => {
+      const score = skillAssessment.input_data.score[index];
+      return getFeedback(predictedProficiencyScore, score);
+    }
+  );
   const updatedresult = {
     ...skillAssessment,
+    feedback: feedback,
     dateTimeGiven: new Date(),
   };
-
+// console.log(updatedresult)
   try {
     const user = await User.findById(userId);
     if (!user) {
@@ -244,19 +265,16 @@ const saveSkillAssessment = async (req, res) => {
   }
 };
 
-
 // Get user progress filtered by the latest test date
 const getFilteredProgress = async (req, res) => {
   try {
     const { userId } = req.params;
-
 
     // Fetch user and their progress
     const user = await User.findById(userId, "progress");
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-
 
     // Filter the latest progress per skill
     const latestProgressMap = {};
@@ -264,33 +282,31 @@ const getFilteredProgress = async (req, res) => {
       const skill = entry.skillName;
       if (
         !latestProgressMap[skill] ||
-        new Date(entry.dateTimeGiven) > new Date(latestProgressMap[skill].dateTimeGiven)
+        new Date(entry.dateTimeGiven) >
+          new Date(latestProgressMap[skill].dateTimeGiven)
       ) {
         latestProgressMap[skill] = entry;
       }
     });
- // Transform the filtered progress map into an array
- const filteredProgress = Object.values(latestProgressMap);
+    // Transform the filtered progress map into an array
+    const filteredProgress = Object.values(latestProgressMap);
 
-
- res.status(200).json(filteredProgress);
-} catch (error) {
- console.error("Error fetching filtered progress:", error);
- res.status(500).json({ error: "Internal server error" });
-}
+    res.status(200).json(filteredProgress);
+  } catch (error) {
+    console.error("Error fetching filtered progress:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
 };
-
 
 const getAllProgress = async (req, res) => {
   try {
     const { userId } = req.params;
-console.log(userId);
+    console.log(userId);
     // Fetch user and their progress
     const user = await User.findById(userId, "progress");
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-
 
     // Return all progress records
     res.status(200).json(user.progress);
@@ -305,8 +321,14 @@ const postSkillAssessmentFeedback = async (req, res) => {
     const userId = req.params.userId;
     const user = await User.findById(userId);
 
-    if (!user || !user.skillProficiencyAssessment || user.skillProficiencyAssessment.length === 0) {
-      return res.status(404).json({ message: 'No skill assessment data found for this user.' });
+    if (
+      !user ||
+      !user.skillProficiencyAssessment ||
+      user.skillProficiencyAssessment.length === 0
+    ) {
+      return res
+        .status(404)
+        .json({ message: "No skill assessment data found for this user." });
     }
 
     const latestAssessment = user.skillProficiencyAssessment.sort((a, b) => {
@@ -320,31 +342,39 @@ const postSkillAssessmentFeedback = async (req, res) => {
         latestAssessment.input_data.level[index],
         latestAssessment.predictions[index],
         latestAssessment.input_data.score[index],
-        'Need Improvement' // Example criteria
+        latestAssessment.feedback[index],
+        
       ];
     });
 
     // Loop through each skill quiz and call the Python script
     const feedbackPromises = args.map((argArray) => {
       return new Promise((resolve, reject) => {
-        const pythonProcess = spawn('python', ['../backend/MLmodel/detailedfeedback.py', ...argArray]);
+        const pythonProcess = spawn("python", [
+          "../backend/MLmodel/detailedfeedback.py",
+          ...argArray,
+        ]);
 
-        let output = '';
-        let errorOutput = '';
+        let output = "";
+        let errorOutput = "";
 
-        pythonProcess.stdout.on('data', (data) => {
+        pythonProcess.stdout.on("data", (data) => {
           output += data.toString();
         });
 
-        pythonProcess.stderr.on('data', (data) => {
+        pythonProcess.stderr.on("data", (data) => {
           errorOutput += data.toString();
         });
 
-        pythonProcess.on('close', (code) => {
+        pythonProcess.on("close", (code) => {
           if (code === 0) {
             resolve(output);
           } else {
-            reject(new Error(`Python process exited with code ${code}: ${errorOutput}`));
+            reject(
+              new Error(
+                `Python process exited with code ${code}: ${errorOutput}`
+              )
+            );
           }
         });
       });
@@ -354,13 +384,13 @@ const postSkillAssessmentFeedback = async (req, res) => {
     // console.log(latestAssessment)
     // console.log(feedbackResults)
     res.status(200).json({ latestAssessment, feedbackResults });
-
   } catch (error) {
-    console.error('Error fetching skill assessment feedback:', error);
-    res.status(500).json({ message: 'Server error while fetching skill assessment feedback.' });
+    console.error("Error fetching skill assessment feedback:", error);
+    res.status(500).json({
+      message: "Server error while fetching skill assessment feedback.",
+    });
   }
 };
-
 
 const getLearningPathway = async (req, res) => {
   try {
@@ -369,15 +399,18 @@ const getLearningPathway = async (req, res) => {
     console.log(userId);
 
     if (!user) {
-      return res.status(404).json({ message: 'user not found.' });
+      return res.status(404).json({ message: "user not found." });
     }
 
-    const careerGoal = user.careerDetails.subLevel && user.careerDetails.subLevel.trim() !== ''
-      ? user.careerDetails.subLevel
-      : user.careerDetails.level;
+    const careerGoal =
+      user.careerDetails.subLevel && user.careerDetails.subLevel.trim() !== ""
+        ? user.careerDetails.subLevel
+        : user.careerDetails.level;
 
     // Convert skills array to comma-separated string
-    const skills = user.careerDetails.skills.map(skill => skill.skillName).join(',');
+    const skills = user.careerDetails.skills
+      .map((skill) => skill.skillName)
+      .join(",");
     // console.log(skills)
     // console.log(skills.split(','))
     // Prepare arguments for the Python script
@@ -385,40 +418,45 @@ const getLearningPathway = async (req, res) => {
 
     // Call the Python script
     const getPathwayFeedback = new Promise((resolve, reject) => {
-      const pythonProcess = spawn('python', ['../backend/RecommendationModel/learningpath.py', ...args]);
+      const pythonProcess = spawn("python", [
+        "../backend/RecommendationModel/learningpath.py",
+        ...args,
+      ]);
 
-      let output = '';
-      let errorOutput = '';
+      let output = "";
+      let errorOutput = "";
 
-      pythonProcess.stdout.on('data', (data) => {
+      pythonProcess.stdout.on("data", (data) => {
         output += data.toString();
       });
 
-      pythonProcess.stderr.on('data', (data) => {
+      pythonProcess.stderr.on("data", (data) => {
         errorOutput += data.toString();
       });
 
-      pythonProcess.on('close', (code) => {
+      pythonProcess.on("close", (code) => {
         if (code === 0) {
           resolve(output);
         } else {
-          reject(new Error(`Python process exited with code ${code}: ${errorOutput}`));
+          reject(
+            new Error(`Python process exited with code ${code}: ${errorOutput}`)
+          );
         }
       });
     });
 
     const learningPathFeedback = await getPathwayFeedback;
-    console.log(learningPathFeedback)
-    res.status(200).json({ careerGoal, skills: skills.split(','), learningPathFeedback });
+    console.log(learningPathFeedback);
+    res
+      .status(200)
+      .json({ careerGoal, skills: skills.split(","), learningPathFeedback });
   } catch (error) {
-    console.error('Error fetching learning path:', error);
-    res.status(500).json({ message: 'Server error while fetching learning path.' });
+    console.error("Error fetching learning path:", error);
+    res
+      .status(500)
+      .json({ message: "Server error while fetching learning path." });
   }
 };
-
-
-
-
 
 module.exports = {
   logoutuserhandler,
@@ -432,5 +470,5 @@ module.exports = {
   postSkillAssessmentFeedback,
   getLearningPathway,
   getAllProgress,
-  getFilteredProgress
+  getFilteredProgress,
 };

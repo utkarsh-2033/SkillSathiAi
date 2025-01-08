@@ -64,6 +64,7 @@ const userSchema = new mongoose.Schema({
           time_taken_avg: [Number],
         },
         predictions: [Number],
+        feedback: [String],
         dateTimeGiven: { type: Date, default: Date.now },
       },
     ],
