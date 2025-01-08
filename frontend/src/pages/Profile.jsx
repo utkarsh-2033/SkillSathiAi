@@ -127,7 +127,7 @@ const Profile = () => {
 
   return (
     <div>
-      <div className="max-w-5xl flex flex-col sm:flex-row gap-8  m-auto mt-5 p-8 pt-2 bg-white rounded-md shadow-lg">
+      <div className="max-w-5xl flex flex-col sm:flex-row gap-8  m-auto my-16 p-8 pt-2 bg-white rounded-md shadow-lg">
         <div className="flex flex-col sm:flex-1">
           <input
             type="file"
@@ -240,22 +240,9 @@ const Profile = () => {
             </button>
           </div>
         </div>
-        <div className="sm: flex-1">
-          <CareerGoalsSelection />
-        </div>
+        
       </div>
-      <div className="text-center">
-        {user.careerDetails.skills.length > 0 && (
-          <button
-            onClick={() => {
-              navigate("/skill-assessment");
-            }}
-            className="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white px-6 py-3 rounded-md text-xl font-bold shadow-lg my-3 hover:from-purple-600 hover:via-pink-600 hover:to-red-600 transition duration-300 transform hover:scale-105 mb-8"
-          >
-            Start Skill Assessment
-          </button>
-        )}
-      </div>
+      
     </div>
   );
 };

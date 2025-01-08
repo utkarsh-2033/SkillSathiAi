@@ -171,7 +171,7 @@ const SkillGapIdentificationPage = () => {
         <button
           onClick={handleSendData}
           disabled={isSending}
-          className={`bg-green-600 text-white py-3 px-6 rounded-lg shadow-lg hover:bg-green-700 transition-all ${
+          className={`bg-green-600 text-white py-3 px-6 text-lg rounded-lg shadow-lg hover:bg-green-700 transition-all ${
             isSending ? "opacity-50 cursor-not-allowed" : ""
           }`}
         >

@@ -18,13 +18,13 @@ function HomePage() {
     } else if (user && careerDetails.skills.length === 0) {
       navigate("/gkquiz"); // Redirect to Career Quiz page
     } else {
-      navigate(`/progress/${user._id}`); // Redirect to Progress page
+      navigate(`/progress`); // Redirect to Progress page
     }
   };
 
 
   const handleStarted=()=>{
-    navigate("/profile");
+    navigate("/career-goal");
   }
 
 

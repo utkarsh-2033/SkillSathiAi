@@ -39,16 +39,17 @@ const SkillAssessmentPage = () => {
         careerGoal={careerGoal}
         level={level}
         subLevel={subLevel}
-        skills={knownSkills}
+        knownskills={knownSkills}
+        skills={skills}
         onSkillSelect={handleSkillSelect}
       />
       <div className="mt-6 flex justify-center gap-6">
         {/* Button to navigate to Skill Gap Identification */}
         <button
           onClick={handleNavigateToSkillGap}
-          className="bg-indigo-600 text-white py-3 px-6 rounded-lg shadow-lg hover:bg-indigo-700 transition-all"
+          className="bg-indigo-600 text-white py-3 text-lg px-6 rounded-lg shadow-lg hover:bg-indigo-700 transition-all"
         >
-          View Today's Quiz Results
+          View Quiz Results
         </button>
       </div>
     </div>

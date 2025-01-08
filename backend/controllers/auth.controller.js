@@ -24,10 +24,12 @@ const jwt = require("jsonwebtoken");
 
  const signinController = async (req, res, next) => {
   const { email, password } = req.body;
+  // console.log(req.body);
   let user = await User.findOne({ email });
+  // console.log(user);
   if (!user) {
     return res
-      .status(404)
+      .status(400)
       .json({ success: false, message: "Email does not exist" });
   }
   try {

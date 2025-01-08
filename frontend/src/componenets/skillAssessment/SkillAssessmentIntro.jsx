@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import { selectUser } from "../../redux/slices/userSlice";
 import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 
 const SkillAssessmentIntro = ({
   careerGoal,
   level,
   subLevel,
+  knownskills,
   skills,
   onSkillSelect,
 }) => {
@@ -14,7 +16,9 @@ const SkillAssessmentIntro = ({
   const [progress, setProgress] = useState({});
   const user = useSelector(selectUser);
   const userId=user._id;
+  const location=useLocation();
   // Function to fetch progress data
+  const list=location.state?.from==='careergoal'? knownskills:skills;
   const fetchUserProgress = async (userId) => {
     try {
       const response = await fetch(`user/api/progress/${userId}`);
@@ -66,9 +70,9 @@ const SkillAssessmentIntro = ({
       </div>
 
       {/* Skill Selector */}
-      {skills.length > 0 ? (
+      {list.length > 0 ? (
         <div className="grid grid-cols-2 gap-4 mt-6">
-          {skills.map((skill) => (
+          {list.map((skill) => (
             <div key={skill.skillName} className="relative">
               <button
                 className="bg-white p-4 border rounded-md w-full shadow hover:bg-gray-100 text-gray-800 font-semibold"

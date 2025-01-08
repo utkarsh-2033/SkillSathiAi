@@ -64,13 +64,13 @@ const Navbar2 = () => {
             </span>
           </Link>
         </nav>
-        <nav>
+        {/* <nav>
           <Link to="/recommendation">
             <span className="font-semibold text-md text-white bg-[#9333ea] hover:bg-purple-600 py-2 px-4 rounded-full shadow-lg">
               Recommendation
             </span>
           </Link>
-        </nav>
+        </nav> */}
 
         {/* User Profile Dropdown */}
         <div className="relative">
