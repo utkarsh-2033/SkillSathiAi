@@ -10,6 +10,7 @@ const CarrierGoal = () => {
 
   // Safely access career details and filter skills
   const careerDetails = user?.careerDetails || {};
+  const goal=careerDetails?.subLevel || careerDetails?.level;
   const skillsWithLevels = (careerDetails?.skills || []).filter((skill) => skill.level);
 
 
@@ -19,38 +20,45 @@ const CarrierGoal = () => {
 
 
   return (
-    <div className="p-6 w-4/5 mx-auto">
-      <h1 className="text-3xl font-bold text-center mb-8 text-gray-800">Career Overview</h1>
+    <div className="p-6 w-4/5 flex flex-col justify-center mx-auto  min-h-screen">
+      <h1 className="text-center text-3xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-3 font-serif">
+        Carrer Overview
+      </h1>
 
 
       <div className="bg-white p-8 rounded-md shadow-md hover:shadow-lg transition-shadow">
         {careerDetails.careerGoal ? (
           <>
-            <h2 className="text-4xl font-semibold text-violet-900 mb-4">Your Career Path</h2>
-            <p className="text-gray-700 mb-4">
-              <span className="font-bold lg:text-2xl">Career Goal:</span>
-              <span className="lg:text-2xl text-pink-700"> {careerDetails.careerGoal}</span>
-            </p>
-            <p className="text-gray-700 mb-4">
-              <span className="font-bold lg:text-2xl">Level:</span>
-              <span className="lg:text-2xl text-pink-700"> {careerDetails.level || "Not specified"}</span>
-            </p>
-            <p className="text-gray-700 mb-4">
-              <span className="font-bold lg:text-2xl">Sub-Level:</span>
-              <span className="lg:text-2xl text-pink-700"> {careerDetails.subLevel || "Not specified"}</span>
-            </p>
+            <div className="text-center mb-8">
+             
+              <div className="flex flex-col items-center gap-6">
+               
+                <div className="flex flex-wrap justify-center gap-4">
+                  <div className=" flex flex-row gap-6 px-12 items-center justify-center  py-4 bg-gradient-to-r from-blue-500 to-indigo-500 text-white rounded-lg shadow-md">
+                    <h3 className="text-3xl font-bold text-black">Career Goal -</h3>
+                    <p className="text-2xl font-semibold ">{goal}</p>
+                  </div>
+                  {/* <div className="w-48 p-4 bg-gradient-to-r from-green-500 to-teal-500 text-white rounded-lg shadow-md">
+                    <h3 className="text-3xl font-semibold">Sub-Level</h3>
+                    <p className="text-2xl font-bold mt-2">{careerDetails?.subLevel || "Not specified"}</p>
+                  </div> */}
+                </div>
+              </div>
+            </div>
 
 
             {skillsWithLevels.length > 0 ? (
               <div className="mt-6">
-                <h3 className="text-2xl font-bold text-violet-800 mb-4">Skills Required For Your Goal:</h3>
-                <div className="flex flex-wrap gap-6 justify-center ">
+                <h3 className="text-2xl font-serif font-bold text-violet-800 mb-4">Skills Required For Your Goal:</h3>
+                <div className="grid sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   {skillsWithLevels.map((skill, index) => (
                     <div
                       key={index}
-                      className="w-40 h-40 bg-gray-50 flex items-center justify-center text-center shadow-xl border border-gray-400 text-gray-700 font-medium p-4 rounded-lg transform transition-transform duration-200 hover:scale-105 hover:bg-slate-50"
+                      className="relative p-2 rounded-xl bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-lg transform transition-transform hover:scale-105"
                     >
-                      <span className="text-2xl font-bold text-gray-800">{skill.skillName}</span>
+                      <div className="text-center">
+                        <span className="text-2xl font-bold block font-serif">{skill.skillName}</span>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -63,24 +71,24 @@ const CarrierGoal = () => {
 
 
             <div className="flex justify-center mt-6">
-              <button
+            <button
                 onClick={handleNavigateToProfile}
-                className="px-8 py-4 bg-violet-800 text-2xl text-white font-semibold rounded-lg shadow-md hover:bg-violet-700 transition-colors"
+                className="px-12 py-4 bg-violet-800 text-md sm:text-xl text-white font-bold rounded-full shadow-lg hover:bg-violet-700 hover:shadow-2xl transition-all"
               >
                 Edit Career
               </button>
             </div>
           </>
         ) : (
-          <div className="text-center ">
-            <p className="text-gray-700 text-lg font-medium mb-4">
-              You haven't chosen a career path yet.
+          <div className="text-center">
+            <p className="text-gray-700 text-md font-medium mb-4">
+              You haven't chosen a carier path yet.
             </p>
             <button
               onClick={handleNavigateToProfile}
-              className="px-6 py-2 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 transition-colors"
+              className="px-6 py-3 bg-green-500 text-xl text-white font-bold rounded-full shadow-md hover:bg-green-600 hover:shadow-lg transition-all"
             >
-              Choose Career Path
+              Choose Carier Path
             </button>
           </div>
         )}
