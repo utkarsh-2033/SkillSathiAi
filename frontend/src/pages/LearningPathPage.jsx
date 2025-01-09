@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectUser } from "../redux/slices/userSlice";
 import ReactMarkdown from "react-markdown";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 const LearningPath = ({ userId }) => {
   const [data, setData] = useState(null);
@@ -69,6 +71,43 @@ const LearningPath = ({ userId }) => {
     fetchLearningPath();
   }, [userId]);
 
+  //pdf
+  const downloadAsPDF = () => {
+    const input = document.getElementById('contentToConvert');
+  
+    // Set the options for html2canvas to capture the full content
+    const options = {
+      scale: 2, // Increase the scale to improve the quality
+      useCORS: true,
+    };
+  
+    html2canvas(input, options).then((canvas) => {
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgWidth = 210; // A4 width in mm
+      const pageHeight = 297; // A4 height in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      let heightLeft = imgHeight;
+      let position = 0;
+  
+      // Add the first page
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pageHeight;
+  
+      // Add more pages if necessary
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+      }
+  
+      pdf.save('learning_path.pdf');
+    });
+  };
+  
+  
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen bg-gray-100">
@@ -87,7 +126,7 @@ const LearningPath = ({ userId }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-gray-100 py-10">
-      <div className="max-w-5xl mx-auto bg-white shadow-md rounded-lg p-8">
+      <div id="contentToConvert" className="max-w-5xl mx-auto bg-white shadow-md rounded-lg p-8">
         <h1 className="text-3xl font-bold text-gray-800 text-center">
           Your Learning Pathway
         </h1>
@@ -190,6 +229,16 @@ const LearningPath = ({ userId }) => {
             <ReactMarkdown className="prose">{data.timelineText}</ReactMarkdown>
           </div>
         </div>
+      </div>
+      <div className="text-center mt-6">
+        {" "}
+        <button
+          onClick={downloadAsPDF}
+          className="bg-blue-600 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-blue-700 transition-all"
+        >
+          {" "}
+          Download as PDF{" "}
+        </button>{" "}
       </div>
     </div>
   );
