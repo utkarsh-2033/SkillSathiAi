@@ -1,13 +1,13 @@
-const Quiz = require('../models/quiz.model');
+const Quiz = require("../models/quiz.model");
+const { exec } = require('child_process');
 
 const getQuizBySkillAndLevel = async (req, res) => {
   try {
     let { title } = req.query;
-    const level = req.query.level.trim(); 
-
+    const level = req.query.level.trim();
 
     if (!title || !level) {
-      return res.status(400).json({ error: 'Title and level are required.' });
+      return res.status(400).json({ error: "Title and level are required." });
     }
     // tiltle=title.toUpperCase();
     // console.log(title);
@@ -15,7 +15,7 @@ const getQuizBySkillAndLevel = async (req, res) => {
     const quiz = await Quiz.findOne({ title });
 
     if (!quiz) {
-      return res.status(404).json({ error: 'Quiz not found.' });
+      return res.status(404).json({ error: "Quiz not found." });
     }
 
     // Fetch questions based on the level
@@ -23,13 +23,15 @@ const getQuizBySkillAndLevel = async (req, res) => {
     const questions = quiz.levels[level];
 
     if (!questions || questions.length === 0) {
-      return res.status(404).json({ error: 'No questions found for the specified level.' });
+      return res
+        .status(404)
+        .json({ error: "No questions found for the specified level." });
     }
     // console.log(questions)
     res.status(200).json({ questions });
   } catch (error) {
-    console.error('Error fetching questions:', error);
-    res.status(500).json({ error: 'Internal server error.' });
+    console.error("Error fetching questions:", error);
+    res.status(500).json({ error: "Internal server error." });
   }
 };
 
@@ -38,7 +40,9 @@ const saveQuiz = async (req, res) => {
   let { title, level, question } = req.body;
 
   if (!title || !level || !question) {
-    return res.status(400).json({ error: "Missing required fields: title, level, or question." });
+    return res
+      .status(400)
+      .json({ error: "Missing required fields: title, level, or question." });
   }
 
   try {
@@ -50,7 +54,9 @@ const saveQuiz = async (req, res) => {
     }
 
     if (!quiz.levels[level]) {
-      return res.status(400).json({ error: `Level '${level}' does not exist in the quiz.` });
+      return res
+        .status(400)
+        .json({ error: `Level '${level}' does not exist in the quiz.` });
     }
 
     quiz.levels[level].push(question);
@@ -62,13 +68,27 @@ const saveQuiz = async (req, res) => {
     console.error("Error adding question:", error);
     res.status(500).json({ error: "Internal server error." });
   }
-}
+};
 
-
-
+const subjectiveAnsmatch = async (req, res) => {
+  const { userAnswer, modelAnswer } = req.body; 
+  const command = `python3 similarity.py "${userAnswer}" "${modelAnswer}"`;
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error executing script: ${error.message}`);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+    if (stderr) {
+      console.error(`Script error: ${stderr}`);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+    const similarity = parseFloat(stdout.trim());
+    res.json({ similarity });
+  });
+};
 
 module.exports = {
   getQuizBySkillAndLevel,
-  saveQuiz
-  
+  saveQuiz,
+  subjectiveAnsmatch,
 };

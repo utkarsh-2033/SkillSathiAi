@@ -92,7 +92,7 @@ const CourseAndBookRecommendation = () => {
   };
 
   return (
-    <div className="my-4 max-w-4xl mx-auto p-6 bg-gray-100 rounded-md shadow-md">
+    <div className="mt-16 max-w-4xl mx-auto p-6 mb-16 bg-gray-100 rounded-md shadow-md">
       {/* <h1 className="text-2xl font-bold text-gray-700 mb-4">Course & Book Recommendation</h1> */}
 
       {/* Course Recommendation Section */}

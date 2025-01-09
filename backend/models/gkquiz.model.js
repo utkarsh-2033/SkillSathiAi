@@ -1,20 +1,17 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 
-const optionSchema = new mongoose.Schema({
-  answer: { type: String, required: true },
-  careerGoals: { type: [String], required: true },
-  nextQuestion: { type: Number, required: true },  // This field is used to navigate to the next question
+const QuestionSchema = new mongoose.Schema({
+  question_id: { type: Number, required: true },
+  question_text: { type: String, required: true },
+  options: [
+    {
+      answer: { type: String, required: true },
+      careerGoals: [String],
+      nextQuestion: { type: Number, default: null },
+    },
+  ],
 });
 
 
-const quizSchema = new mongoose.Schema({
-  question: { type: String, required: true },
-  options: { type: [optionSchema], required: true },
-});
-
-
-const gkQuiz = mongoose.model('gkQuiz', quizSchema);
-
-
-module.exports = gkQuiz;
+module.exports = mongoose.model("Question", QuestionSchema);

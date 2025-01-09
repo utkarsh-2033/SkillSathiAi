@@ -95,16 +95,6 @@ const SkillAssessmentFeedbackPage = () => {
               </tbody>
             </table>
           </div>
-          <div className=" text-center">
-            <button
-              onClick={() => {
-                navigate("/learning-path-timeline");
-              }}
-              className=" mt-5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white px-6 py-3 rounded-md text-xl font-bold shadow-lg my-5 hover:from-purple-600 hover:via-pink-600 hover:to-red-600 transition duration-300 transform hover:scale-105 mb-8"
-            >
-              Get Personalized Learning Path
-            </button>
-          </div>
 
           {/* Feedback Results Section */}
           <div className="mt-8 p-6 bg-white shadow-lg rounded-lg">
@@ -134,6 +124,16 @@ const SkillAssessmentFeedbackPage = () => {
                 ))}
               </div>
             )}
+          </div>
+          <div className=" text-center">
+            <button
+              onClick={() => {
+                navigate("/learning-path-timeline");
+              }}
+              className=" mt-5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white px-6 py-3 rounded-md text-xl font-bold shadow-lg my-5 hover:from-purple-600 hover:via-pink-600 hover:to-red-600 transition duration-300 transform hover:scale-105 mb-8"
+            >
+              Get Personalized Learning Path of your Career Goal
+            </button>
           </div>
         </>
       )}

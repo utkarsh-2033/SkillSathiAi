@@ -1,9 +1,12 @@
-const express = require('express');
+const express=require('express')
+const { getQuestionById, determineCareerGoal } = require("../controllers/gkquiz.controller.js");
+
+
 const router = express.Router();
-const {getQuizQuestions,submitQuizAnswers}=require("../controllers/gkquiz.controller.js");
 
-router.get('/questions', getQuizQuestions);
 
-router.post('/submit', submitQuizAnswers);
+router.get("/:id", getQuestionById); // Get a question by ID
+router.post("/career-goal", determineCareerGoal); // Determine career goal
+
 
 module.exports = router;
