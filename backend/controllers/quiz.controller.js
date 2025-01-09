@@ -25,7 +25,7 @@ const getQuizBySkillAndLevel = async (req, res) => {
     if (!questions || questions.length === 0) {
       return res.status(404).json({ error: 'No questions found for the specified level.' });
     }
-
+    // console.log(questions)
     res.status(200).json({ questions });
   } catch (error) {
     console.error('Error fetching questions:', error);

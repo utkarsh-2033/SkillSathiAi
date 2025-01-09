@@ -15,7 +15,7 @@ const QuizResult = ({
     if (from === "SkillQuiz") {
       navigate("/skillQuiz");
     } else {
-      navigate("/skill-assessment");
+      navigate("/skill-assessment",{ state: { from: 'careergoal' } });
     }
   };
 

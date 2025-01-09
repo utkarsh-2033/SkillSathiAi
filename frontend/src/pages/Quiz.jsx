@@ -11,11 +11,12 @@ import { useSelector } from "react-redux";
 
 const Quiz = () => {
   const { skillname } = useParams();
-  const location = useLocation(); // For fetching query parameters
-  const navigate = useNavigate(); // For navigation
+  const location = useLocation();
+  const navigate = useNavigate();
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState({});
+  const [correctAns, setCorrectAns] = useState({});
   const [quizStartTime, setQuizStartTime] = useState(Date.now());
   const [isCompleted, setIsCompleted] = useState(false);
   const [isTimerStopped, setIsTimerStopped] = useState(false);
@@ -35,7 +36,7 @@ const Quiz = () => {
   }, [questions]);
   // console.log(difficultyAverage);
 
-  // Fetch the level from the query string (default to "easy")
+  // Fetching the level from the query string (default to "easy")
   const queryParams = new URLSearchParams(location.search);
   const level = queryParams.get("level") || "easy";
 
@@ -49,8 +50,15 @@ const Quiz = () => {
           `/api/quiz/questions?title=${skillname}&level=${level}`
         );
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         setQuestions(data.questions);
+
+        // Extract correct options into an object
+        const correctOptions = {};
+        data.questions.forEach((question, index) => {
+          correctOptions[index] = question.correct_option;
+        });
+        setCorrectAns(correctOptions);
       } catch (error) {
         console.error("Error fetching questions:", error);
       }
@@ -79,6 +87,8 @@ const Quiz = () => {
   };
 
   const handleSubmit = async () => {
+    console.log(correctAns);
+    console.log(answers);
     setIsCompleted(true);
     setIsTimerStopped(true);
     const resultData = {
@@ -87,10 +97,10 @@ const Quiz = () => {
       level,
       score: calculateScore(),
       timeTaken: calculateTimeTaken(),
-      avgDifficulty:difficultyAverage,
+      avgDifficulty: difficultyAverage,
       isPassed: calculateScore() > 7,
     };
-    console.log(resultData);
+    // console.log(resultData);
 
     try {
       const res = await fetch(`/user/saveQuizResult/${user._id}`, {
@@ -100,11 +110,11 @@ const Quiz = () => {
         },
         body: JSON.stringify(resultData),
       });
-      const data=await res.json();
-      if(res.ok){
-        console.log(data)
-      }else{
-        console.log("error in saving result")
+      const data = await res.json();
+      if (res.ok) {
+        // console.log(data);
+      } else {
+        console.log("error in saving result");
       }
     } catch (error) {
       console.log(error);
@@ -124,9 +134,13 @@ const Quiz = () => {
   };
 
   const calculateScore = () => {
-    return Object.values(answers).filter(
-      (answer, index) => answer === questions[index].correct_option
-    ).length;
+    console.log("Answers:", answers);
+    console.log("Correct Answers:", correctAns);
+    const correctCount = Object.keys(answers).filter((key) => {
+      return answers[key] === correctAns[key];
+    }).length;
+    console.log("Correct Count:", correctCount);
+    return correctCount;
   };
   // Check if questions are loaded
   if (questions.length === 0) {
@@ -134,7 +148,7 @@ const Quiz = () => {
   }
 
   return (
-    <div className="bg-gray-100 w-4/5 mx-auto mt-6 p-6 rounded-lg shadow-lg  max-w-4xl">
+    <div  className="bg-gray-100 w-4/5 mx-auto min-h-screen mb-12 mt-6 p-6 rounded-lg shadow-lg  max-w-4xl">
       <h2 className="text-3xl font-bold mb-4 text-center">
         Quiz: {skillname}- <span className="text-green-800">{level}</span>
       </h2>
@@ -185,6 +199,7 @@ const Quiz = () => {
               <SubjectiveQuestion
                 questionIndex={currentQuestionIndex}
                 question={questions[currentQuestionIndex]}
+                selectedAnswer={answers[currentQuestionIndex]}
                 onAnswerChange={handleAnswerChange}
               />
             )}

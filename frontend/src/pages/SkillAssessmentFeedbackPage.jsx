@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { selectUser } from "../redux/slices/userSlice";
+import { useNavigate } from "react-router-dom";
 
 const SkillAssessmentFeedbackPage = () => {
   const user = useSelector(selectUser);
   const [skillData, setSkillData] = useState(null);
   const [feedbackResults, setFeedbackResults] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate=useNavigate();
 
   useEffect(() => {
     // Fetch the latest skillProficiencyAssessment data
@@ -38,7 +40,7 @@ const SkillAssessmentFeedbackPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-green-200 to-blue-200 p-6"> 
+    <div className="min-h-screen bg-gradient-to-r from-green-200 to-blue-200 p-6">
       <h1 className="text-4xl font-bold text-center text-gray-800 mb-6">
         Skill Assessment Feedback
       </h1>
@@ -57,7 +59,9 @@ const SkillAssessmentFeedbackPage = () => {
                   <th className="py-3 px-6 font-bold text-left">Feedback</th>
                   <th className="py-3 px-6 font-bold text-left">Skill</th>
                   <th className="py-3 px-6 font-bold text-left">Level</th>
-                  <th className="py-3 px-6 font-bold text-left">Proficiency Score</th>
+                  <th className="py-3 px-6 font-bold text-left">
+                    Proficiency Score
+                  </th>
                   <th className="py-3 px-6 font-bold text-left">Score</th>
                 </tr>
               </thead>
@@ -69,7 +73,7 @@ const SkillAssessmentFeedbackPage = () => {
                   >
                     <td className="py-3 px-6 text-left">
                       <span className="font-medium text-green-600">
-                      {skillData.feedback[index]}
+                        {skillData.feedback[index]}
                       </span>
                     </td>
                     <td className="py-3 px-6 text-left font-semibold text-gray-800">
@@ -91,6 +95,16 @@ const SkillAssessmentFeedbackPage = () => {
               </tbody>
             </table>
           </div>
+          <div className=" text-center">
+            <button
+              onClick={() => {
+                navigate("/learning-path-timeline");
+              }}
+              className=" mt-5 bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white px-6 py-3 rounded-md text-xl font-bold shadow-lg my-5 hover:from-purple-600 hover:via-pink-600 hover:to-red-600 transition duration-300 transform hover:scale-105 mb-8"
+            >
+              Get Personalized Learning Path
+            </button>
+          </div>
 
           {/* Feedback Results Section */}
           <div className="mt-8 p-6 bg-white shadow-lg rounded-lg">
@@ -110,10 +124,12 @@ const SkillAssessmentFeedbackPage = () => {
                       Feedback for Skill {index + 1}:
                     </p>
                     <div
-                  key={index}
-                  className="mb-8 text-gray-700"
-                  dangerouslySetInnerHTML={{ __html: formatFeedback(feedback) }}
-                />
+                      key={index}
+                      className="mb-8 text-gray-700"
+                      dangerouslySetInnerHTML={{
+                        __html: formatFeedback(feedback),
+                      }}
+                    />
                   </div>
                 ))}
               </div>
