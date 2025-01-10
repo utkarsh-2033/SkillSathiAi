@@ -40,8 +40,8 @@ const Signup = () => {
     // console.log(formdata);
   };
   return (
-    <div>
-      <div className=" max-w-md mt-16 m-auto">
+    <div className="min-h-screen">
+      <div className=" max-w-md mt-32 m-auto">
         <h1 className="font-bold text-2xl my-4 text-center">SignUp</h1>
         <form onSubmit={submitHandler} className="flex flex-col gap-4">
           <input

@@ -43,10 +43,10 @@ const Signin = () => {
     // console.log(formdata);
   };
   return (
-    <div>
-      <div className=" max-w-md mt-16 m-auto">
+    <div className="min-h-screen">
+      <div className=" max-w-md mt-36 m-auto">
         <h1 className="font-bold text-2xl my-4 text-center">SignIn</h1>
-        <form onSubmit={submitHandler} className="flex flex-col gap-4">
+        <form onSubmit={submitHandler} className="flex flex-col gap-8">
           <input
             type="email"
             id="email"

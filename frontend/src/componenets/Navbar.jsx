@@ -49,7 +49,7 @@ const Navbar2 = () => {
         </Link>
 
         {/* Navigation Links (visible only on larger devices) */}
-        <div className="hidden lg:flex space-x-3 lg:space-x-20">
+        <div className="hidden lg:flex space-x-3 lg:space-x-5">
           <Link
             to="/skillQuiz"
             className="font-semibold text-md text-white py-2 px-6 shadow-sm transition-all duration-300 ease-in-out transform hover:scale-103"
@@ -74,79 +74,87 @@ const Navbar2 = () => {
           >
             Chat Rooms
           </Link>
-        </div>
-        {/* Desktop Profile Section */}
-        {user && (
-          <div className="hidden sm:block relative">
-            <div
-              className="cursor-pointer flex items-center"
-              onClick={toggleDropdown}
-            >
-              <img
-                src={user.photo || "https://via.placeholder.com/150"}
-                alt="profile"
-                className="rounded-full h-12 w-12 object-cover"
-              />
-            </div>
-            {isDropdownOpen && (
+
+          {/* Desktop Profile Section */}
+          {user ? (
+            <div className="hidden sm:block relative">
               <div
-                ref={DropdownRef}
-                className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-2xl z-50"
+                className="cursor-pointer flex items-center"
+                onClick={toggleDropdown}
               >
-                <ul className="text-gray-700">
-                  <li>
-                    <Link
-                      to="/profile"
-                      className="block font-semibold text-lg px-4 py-2 hover:bg-gray-100"
-                    >
-                      Profile
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/career-goal"
-                      className="block font-semibold text-lg px-4 py-2 hover:bg-gray-100"
-                    >
-                      Career Goal
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/skill-assessment"
-                      className="block font-semibold text-lg px-4 py-2 hover:bg-gray-100"
-                    >
-                      Skill Assessment
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/progress"
-                      className="block font-semibold text-lg px-4 py-2 hover:bg-gray-100"
-                    >
-                      Progress
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/admin"
-                      className="block font-semibold text-lg px-4 py-2 hover:bg-gray-100"
-                    >
-                      Admin
-                    </Link>
-                  </li>
-                  <li>
-                    <button
-                      onClick={handleLogout}
-                      className="block text-white font-bold text-xl w-full text-left bg-gray-900 px-4 py-2 hover:bg-gray-600 rounded-md"
-                    >
-                      Logout
-                    </button>
-                  </li>
-                </ul>
+                <img
+                  src={user.photo || "https://via.placeholder.com/150"}
+                  alt="profile"
+                  className="rounded-full h-12 w-12 object-cover"
+                />
               </div>
-            )}
-          </div>
-        )}
+              {isDropdownOpen && (
+                <div
+                  ref={DropdownRef}
+                  className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-2xl z-50"
+                >
+                  <ul className="text-gray-700">
+                    <li>
+                      <Link
+                        to="/profile"
+                        className="block font-semibold text-lg px-4 py-2 hover:bg-gray-100"
+                      >
+                        Profile
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/career-goal"
+                        className="block font-semibold text-lg px-4 py-2 hover:bg-gray-100"
+                      >
+                        Career Goal
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/skill-assessment"
+                        className="block font-semibold text-lg px-4 py-2 hover:bg-gray-100"
+                      >
+                        Skill Assessment
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/progress"
+                        className="block font-semibold text-lg px-4 py-2 hover:bg-gray-100"
+                      >
+                        Progress
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/admin"
+                        className="block font-semibold text-lg px-4 py-2 hover:bg-gray-100"
+                      >
+                        Admin
+                      </Link>
+                    </li>
+                    <li>
+                      <button
+                        onClick={handleLogout}
+                        className="block text-white font-bold text-xl w-full text-left bg-gray-900 px-4 py-2 hover:bg-gray-600 rounded-md"
+                      >
+                        Logout
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link
+              to="/signin"
+              className="font-semibold text-md text-white py-2 px-6 shadow-sm transition-all duration-300 ease-in-out transform hover:scale-103"
+            >
+              SIGNIN
+            </Link>
+          )}
+        </div>
 
         {/* Dropdown Menu Button (for smaller devices) */}
         <buttonb
@@ -291,8 +299,6 @@ const Navbar2 = () => {
             </ul>
           </div>
         )}
-
-        
       </div>
     </header>
   );

@@ -181,18 +181,18 @@ const LearningPath = ({ userId }) => {
                 <th className="border border-gray-300 px-4 py-2 text-left">
                   Skill/Framework
                 </th>
-                {/* <th className="border border-gray-300 px-4 py-2 text-left">
-                  Importance for React.js Developer
-                </th> */}
+                <th className="border border-gray-300 px-4 py-2 text-left">
+                  Importance
+                </th>
                 <th className="border border-gray-300 px-4 py-2 text-left">
                   Key Concepts & Practical Applications
                 </th>
                 <th className="border border-gray-300 px-4 py-2 text-left">
                   Week-wise Learning Objectives
                 </th>
-                <th className="border border-gray-300 px-4 py-2 text-left">
+                {/* <th className="border border-gray-300 px-4 py-2 text-left">
                   Resources
-                </th>
+                </th> */}
               </tr>
             </thead>
             <tbody>
