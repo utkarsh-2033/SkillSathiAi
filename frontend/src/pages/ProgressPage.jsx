@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 // import { useParams } from "react-router-dom";
 import { selectUser } from "../redux/slices/userSlice";
 import { useSelector } from "react-redux";
+import { motion } from "framer-motion"; // Import framer-motion for animations
 import axios from "axios";
 import {
   BarChart,
@@ -31,8 +32,7 @@ const ProgressPage = () => {
 
   const colors = [
     "#8B008B", "#FF1493", "#FF4500", "#FFD700", "#32CD32",
-    "#1E90FF", "#4B0082", "#9400D3", "#FF69B4", "#00CED1",
-    "#DC143C", "#FF6347", "#7B68EE", "#FF8C00", "#00FA9A", "#20B2AA",
+  
   ];
 
 
@@ -101,11 +101,11 @@ const ProgressPage = () => {
 
 
   return (
-    <div className="p-4 max-w-6xl mx-auto">
+    <div className="p-4 max-w-7xl  mx-auto gap-4">
       {hasTakenTests ? (
         <>
           <h1 className="text-2xl font-bold text-center mb-6">Progress Overview</h1>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:mr-6">
             {/* Chart Section */}
             <div className="md:col-span-2 bg-white p-4 rounded-md shadow-md">
               <ResponsiveContainer width="100%" height={400}>
@@ -129,72 +129,90 @@ const ProgressPage = () => {
 
 
             {/* Skill Proficiency Section */}
-            <div className="md:col-span-1 bg-white p-4 rounded-md shadow-md gap-5 ">
-              <h2 className="text-lg font-semibold mb-4">Skill Proficiency Assessment</h2>
-              {skillProficiency.length > 0 ? (
-                skillProficiency.map((assessment, index) => (
-                  <div key={index} className="mb-4">
-                    <p className="text-sm text-gray-700">
-                      <span className="font-bold">Date:</span>{" "}
-                      {new Date(assessment.dateTimeGiven).toLocaleString()}
-                    </p>
-                    <p className="text-sm text-gray-700">
-                      <span className="font-bold">Skill Names:</span>{" "}
-                      {assessment.input_data.skill_name.join(", ")}
-                    </p>
-                    <p className="text-sm text-gray-700">
-                      <span className="font-bold">Difficulty Average:</span>{" "}
-                      {assessment.input_data.difficulty_avg.join(", ")}
-                    </p>
-                    <p className="text-sm text-gray-700">
-                      <span className="font-bold">Levels:</span>{" "}
-                      {assessment.input_data.level.join(", ")}
-                    </p>
-                    <p className="text-sm text-gray-700">
-                      <span className="font-bold">Scores:</span>{" "}
-                      {assessment.input_data.score.join(", ")}
-                    </p>
-                    <p className="text-sm text-gray-700">
-                      <span className="font-bold">Predictions:</span>{" "}
-                      {assessment.predictions.join(", ")}
-                    </p>
-                  </div>
-                ))
-              ) : (
-                <p>No skill proficiency data available.</p>
-              )}
-            </div>
+
+<div className="md:col-span-1 bg-gradient-to-r  from-purple-400 via-pink-400  to-red-400 p-6 rounded-xl shadow-lg gap-5 lg:ml-2">
+  <h2 className="text-2xl font-bold mb-4 text-gray-800">Skill Proficiency Assessment</h2>
+  <div className="h-80 overflow-y-scroll scrollbar-thin scrollbar-thumb-rounded-lg scrollbar-thumb-blue-500">
+    {skillProficiency.length > 0 ? (
+      skillProficiency.map((assessment, index) => (
+        <motion.div
+          key={index}
+          className="mb-4 bg-white p-5 rounded-lg shadow-md transition-transform transform hover:scale-105"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.3, delay: index * 0.1 }}  // Adding staggered effect on load
+        >
+          <p className="text-sm text-gray-800 font-medium">
+            <span className="font-bold">Date:</span>{" "}
+            {new Date(assessment.dateTimeGiven).toLocaleString()}
+          </p>
+          <p className="text-sm text-gray-800 font-medium">
+            <span className="font-bold">Skill Names:</span>{" "}
+            {assessment.input_data.skill_name.join(", ")}
+          </p>
+          <p className="text-sm text-gray-800 font-medium">
+            <span className="font-bold">Difficulty Average:</span>{" "}
+            {assessment.input_data.difficulty_avg.join(", ")}
+          </p>
+          <p className="text-sm text-gray-800 font-medium">
+            <span className="font-bold">Levels:</span>{" "}
+            {assessment.input_data.level.join(", ")}
+          </p>
+          <p className="text-sm text-gray-800 font-medium">
+            <span className="font-bold">Scores:</span>{" "}
+            {assessment.input_data.score.join(", ")}
+          </p>
+          <p className="text-sm text-gray-800 font-medium">
+            <span className="font-bold">Predictions:</span>{" "}
+            {assessment.predictions.join(", ")}
+          </p>
+        </motion.div>
+      ))
+    ) : (
+      <p className="text-center text-gray-700 font-semibold">No skill proficiency data available.</p>
+    )}
+  </div>
+</div>
+
           </div>
 
 
           {/* Cards Section */}
-          <div className="mt-6">
-            <h2 className="text-lg font-semibold mb-4">Test Details</h2>
-            <div className="flex flex-col gap-4">
-              {progressAllData.map((entry, index) => (
-                <div
-                  key={index}
-                  className="bg-gray-100 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow"
-                >
-                  <h3 className="text-xl font-semibold text-violet-900 mb-2">
-                    {entry.skillName}
-                  </h3>
-                  <p className="text-sm text-gray-700">
-                    <span className="font-bold">Level:</span> {entry.level}
-                  </p>
-                  <p className="text-sm text-gray-700">
-                    <span className="font-bold">Date & Time:</span> {entry.dateTimeGiven}
-                  </p>
-                  <p className="text-sm text-gray-700">
-                    <span className="font-bold">Test Score:</span> {entry.testScore}
-                  </p>
-                  <p className="text-sm text-gray-700">
-                    <span className="font-bold">Time Taken:</span> {entry.timeTaken} seconds
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
+      
+
+<div className="mt-8 p-6 bg-gradient-to-r from-green-400 via-blue-400 to-purple-400 rounded-lg shadow-xl">
+  <h2 className="text-2xl font-extrabold text-gray-900 mb-6 text-center">Test Details</h2>
+  <div className="h-80 overflow-y-scroll scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-blue-500">
+    <div className="flex flex-col gap-6">
+      {progressAllData.map((entry, index) => (
+        <motion.div
+          key={index}
+          className="bg-white p-6 rounded-md shadow-lg hover:shadow-xl transition-shadow"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: index * 0.1, duration: 0.5 }}
+        >
+          <h3 className="text-lg font-semibold text-indigo-900 ">
+            {entry.skillName}
+          </h3>
+          <p className="text-sm text-gray-800">
+            <span className="font-bold">Level:</span> {entry.level}
+          </p>
+          <p className="text-sm text-gray-800">
+            <span className="font-bold">Date & Time:</span> {entry.dateTimeGiven}
+          </p>
+          <p className="text-sm text-gray-800">
+            <span className="font-bold">Test Score:</span> {entry.testScore}
+          </p>
+          <p className="text-sm text-gray-800">
+            <span className="font-bold">Time Taken:</span> {entry.timeTaken} seconds
+          </p>
+        </motion.div>
+      ))}
+    </div>
+  </div>
+</div>
+
         </>
       ) : (
         <div className="flex items-center justify-center h-full mt-20">

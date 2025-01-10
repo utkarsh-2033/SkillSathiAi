@@ -70,5 +70,13 @@ const userSchema = new mongoose.Schema({
     ],
     default: [],
   },
+  rewards: {
+    coins: {
+      type: Number,
+      default: 0, // Default coins are 0 for new users
+    },
+  },
+
+
 });
 module.exports = mongoose.model("User", userSchema);

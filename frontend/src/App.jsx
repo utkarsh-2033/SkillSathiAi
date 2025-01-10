@@ -16,7 +16,7 @@ import RecommendationPage from './pages/RecommendationPage'
 import GameSelectionPage from "./pages/Games";
 import CarrierGoal from "./pages/CareerGoal";
 import PuzzleQuiz from "./pages/PuzzleQuiz";
-import SudokuGame from "./pages/Sudoku";
+import SudokuGame from "./pages/NewSudoku";
 import ProgressPage from "./pages/ProgressPage";
 import LearningPath from "./pages/LearningPathPage";
 import GkQuiz from "./pages/Gkquiz";

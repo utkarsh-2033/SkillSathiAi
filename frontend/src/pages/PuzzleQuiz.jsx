@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import "./PuzzleQuiz.css";
-/*import Timer from "./components/Timer.jsx";
-import Dropdownbar from "./components/Dropdownbar.jsx"
-import GameResult from "./components/Gameresult.jsx";*/
-import Timer from "../componenets/Games/Timer";
-import GameResult from "../componenets/Games/Gameresult";
-import Dropdownbar from "../componenets/Games/Dropdown";
+import Timer from "../componenets/Games/Timer1.jsx";
+import Dropdownbar from "../componenets/Games/Dropdownbar.jsx";
+import GameResult from "../componenets/Games/Gameresult1.jsx";
+import styles from "./puzzleword.module.css";
+import FloatingBalls from "../componenets/Games/floatingballs.jsx";
+import { useSelector } from "react-redux";
+import { selectUser } from "../redux/slices/userSlice.js";
 function generateWordSearch(gridSize, wordList) {
   const grid = Array(gridSize)
     .fill(null)
@@ -59,33 +59,114 @@ function generateWordSearch(gridSize, wordList) {
 }
 
 const PuzzleQuiz = () => {
+  const user=useSelector(selectUser)
   const gridSize = 10;
-  const wordList = ["hypertext", "react", "mysql", "git", "python"];
-  const wordQuestions = {
-    hypertext: "What does H in HTML stand for?",
-    react: "Which of the following is a JavaScript framework?",
-    mysql: "What is used for creating databases in web development?",
-    git: "Which tool is used for version control in web development?",
-    python:
-      "Which programming language is primarily used for backend web development?",
-  };
+  const [wordList] = useState(["hypertext", "react", "mysql", "git", "python"]);
 
+  const updateHints = (subject) => {
+    let wordList = [];
+    let newHints = {};
+
+    switch (subject) {
+      case "WEB DEVELOPMENT":
+        wordList = ["hyper", "react", "mysql", "git", "python"];
+        newHints = {
+          hypertext: "What does H in HTML stand for?",
+          react: "Which of the following is a JavaScript framework?",
+          mysql: "What is used for creating databases in web development?",
+          git: "Which tool is used for version control in web development?",
+          python:
+            "Which programming language is primarily used for backend web development?",
+        };
+        break;
+      case "DATA SCIENCE":
+        wordList = ["python", "pandas", "numpy", "tensorflow", "ml"];
+        newHints = {
+          python:
+            "Which programming language is primarily used for data science?",
+          pandas: "Which library is used for data manipulation?",
+          numpy: "Which library is used for numerical computations?",
+          tensorflow: "Which library is used for machine learning?",
+          ml: "Which field involves training models to predict outcomes?",
+        };
+        break;
+      case "UI/UX DESIGNER":
+        wordList = ["clarity", "mockup", "usable", "wireframe", "ease"];
+        newHints = {
+          Clarity: "What’s the most important design principle?",
+          mockup: "What is a visual representation of a design called?",
+          usable: "Which term refers to the ease of use of a product?",
+          wireframe: "What is the blueprint of a design called?",
+          ease: "What is key for web design?",
+        };
+        break;
+      case "FINANCIAL ANALYST":
+        wordList = ["stock", "export", "sav", "equity", "bonds"];
+        newHints = {
+          stock: "What are shares of ownership in a company called?",
+          Export: "What commands is used to save the output in SPSS?",
+          sav: "What is file extension for an SPSS data file?",
+          equity: "What term refers to ownership shares in a company?",
+          bonds: "What are debt securities issued by companies or governments?",
+        };
+        break;
+      case "PRODUCT MANAGER":
+        wordList = ["roadmap", "backlog", "scrum", "select", "release"];
+        newHints = {
+          roadmap: "What is a strategic plan for a product's development?",
+          backlog: "What is the list of tasks and features to be completed?",
+          scrum: "What is the agile framework for managing projects?",
+          select:
+            "Which SQL statement is used to retrieve data from a database?",
+          release: "What is the final launch of a product or feature called?",
+        };
+        break;
+
+      default:
+        wordList = ["hyper", "react", "mysql", "git", "python"];
+        newHints = {
+          hypertext: "What does H in HTML stand for?",
+          react: "Which of the following is a JavaScript framework?",
+          mysql: "What is used for creating databases in web development?",
+          git: "Which tool is used for version control in web development?",
+          python:
+            "Which programming language is primarily used for backend web development?",
+        };
+    }
+    setHints(newHints);
+    setGrid(generateWordSearch(gridSize, wordList));
+  };
   const [grid, setGrid] = useState(() =>
     generateWordSearch(gridSize, wordList)
   );
   const [selectedCells, setSelectedCells] = useState([]);
   const [foundWords, setFoundWords] = useState([]);
-  const [hints, setHints] = useState(wordQuestions);
-  const [highlightedCells, setHighlightedCells] = useState(new Set());
+  const [hints, setHints] = useState({});
+  const [highlightedCells] = useState(new Set());
   const [timeLeft, setTimeLeft] = useState(60);
   const [isTimeUp, setIsTimeUp] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [timerInterval, setTimerInterval] = useState(null);
 
+  useEffect(() => {
+    const newTimerInterval = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(newTimerInterval);
+          onTimeUp();
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    setTimerInterval(newTimerInterval);
+
+    return () => clearInterval(newTimerInterval);
+  }, []);
+
   const handleCellSelect = (row, col) => {
     if (isTimeUp) return;
-
     const newSelectedCells = [...selectedCells, { row, col }];
+
     if (newSelectedCells.length > 1) {
       const [start, end] = [
         newSelectedCells[0],
@@ -100,19 +181,22 @@ const PuzzleQuiz = () => {
     const word = newSelectedCells
       .map(({ row, col }) => grid[row][col])
       .join("");
+
     if (
       wordList.includes(word.toLowerCase()) &&
       !foundWords.includes(word.toLowerCase())
     ) {
-      setFoundWords([...foundWords, word.toLowerCase()]);
+      const newFoundWords = [...foundWords, word.toLowerCase()];
+      setFoundWords(newFoundWords);
       setSelectedCells([]);
-      if (foundWords.length + 1 === wordList.length) {
+
+      if (newFoundWords.length === wordList.length) {
         clearInterval(timerInterval);
         setIsTimeUp(true);
         setShowResult(true);
         setTimeout(() => {
           setShowResult(false);
-        }, 30000); // Hide result after 3 seconds
+        }, 100000);
       }
     }
   };
@@ -138,7 +222,6 @@ const PuzzleQuiz = () => {
     }, 1000);
     setTimerInterval(newTimerInterval);
   };
-
   const onTimeUp = () => {
     setIsTimeUp(true);
     setShowResult(true);
@@ -147,100 +230,97 @@ const PuzzleQuiz = () => {
     }, 10000);
   };
 
-  useEffect(() => {
-    const newTimerInterval = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(newTimerInterval);
-          onTimeUp();
-        }
-        return prev - 1;
-      });
-    }, 1000);
-    setTimerInterval(newTimerInterval);
-
-    return () => clearInterval(newTimerInterval);
-  }, []);
-
+ 
   return (
-    <div className="flex flex-row p-3 justify-between ">
-      <div className="flex flex-col ml-8 items-center justify-between mt-3">
-        <h1 className="text-3xl font-extrabold">Word Search Puzzle</h1>
-        <Dropdownbar />
-        <span className="">
+    <div className={styles.app}>
+      <FloatingBalls />
+      <div className={styles.head}>
+        <p>Word Search Puzzle</p>
+      </div>
+      <div className={styles.topper}>
+        <div className={styles.Dropdownbar}>
+          <Dropdownbar updateHints={updateHints} />
+        </div>
+        <div className={styles.timer}>
+          <Timer key={timeLeft} timeLeft={timeLeft} onTimeUp={onTimeUp} />
+        </div>
+        <div>
           <button
-            className=""
+            className={styles.reset}
             onClick={resetPuzzle}
             style={{ marginTop: "20px" }}
           >
             Reset Puzzle
           </button>
-          <Timer key={timeLeft} timeLeft={timeLeft} onTimeUp={onTimeUp} />
-        </span>
-        <div className="flex lg:flex-row gap-5 items-center mt-0">
-          <div className="border-4 rounded-lg">
-            <h3 className="text-xl font-semibold font-serif">Hints:</h3>
-            <ul>
-              {Object.entries(hints).map(([word, hint]) => (
-                <p key={word}>{hint}</p>
-              ))}
-            </ul>
-          </div>
-          <div
-            className="game-grid"
-            style={{
-              display: "grid",
-              gridTemplateColumns: `repeat(${gridSize}, 40px) , margin-left:auto`,
-            }}
-          >
-            {grid.map((row, rowIndex) =>
-              row.map((cell, colIndex) => (
-                <div
-                  key={`${rowIndex}-${colIndex}`}
-                  className="game-cell"
-                  style={{
-                    width: "40px",
-                    border: "2px solid #ccc",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: "pointer",
-                    fontWeight: "bold",
-                    fontSize: "18px",
-                    backgroundColor: selectedCells.some(
-                      ({ row, col }) => row === rowIndex && col === colIndex
-                    )
-                      ? "#d3d3d3"
-                      : "transparent",
-                    color: highlightedCells.has(`${rowIndex}-${colIndex}`)
-                      ? "green"
-                      : "black",
-                  }}
-                  onClick={() => handleCellSelect(rowIndex, colIndex)}
-                >
-                  {cell}
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-        <div className="flex flex-row items-center'">
-          <h3>Words Found:</h3>
-          <ul>
-            {foundWords.map((word, index) => (
-              <li key={index}>{word}</li>
-            ))}
-          </ul>
-          <div className="flex flex-row items-center">
-            {showResult && isTimeUp && (
-              <GameResult
-                isWin={foundWords.length === wordList.length}
-                resetPuzzle={resetPuzzle}
-              />
-            )}
-          </div>
         </div>
       </div>
+      {showResult && isTimeUp && (
+        <GameResult
+          isWin={foundWords.length === wordList.length}
+          resetPuzzle={resetPuzzle}
+          userId={user._id}
+        />
+      )}
+      <div className={styles.hintsandgrid}>
+        <div className={styles.hints}>
+          <h3>Hints:</h3>
+          <ul>
+            {Object.entries(hints).map(([word, hint]) => (
+              <p key={word} style={{ fontSize: "20px" }}>
+                {hint}
+              </p>
+            ))}
+          </ul>
+        </div>
+        <div
+          className={styles.grid}
+          style={{
+            display: "grid",
+            marginBottom: "50px",
+            gridTemplateColumns: `repeat(${gridSize}, 40px) `,
+          }}
+        >
+          {grid.map((row, rowIndex) =>
+            row.map((cell, colIndex) => (
+              <div
+                key={`${rowIndex}-${colIndex}`}
+                className={styles.cell}
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  border: "1px solid #272626",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                  fontSize: "18px",
+                  backgroundColor: selectedCells.some(
+                    ({ row, col }) => row === rowIndex && col === colIndex
+                  )
+                    ? "white"
+                    : "transparent",
+                  color: highlightedCells.has(`${rowIndex}-${colIndex}`)
+                    ? "green"
+                    : "black",
+                }}
+                onClick={() => handleCellSelect(rowIndex, colIndex)}
+              >
+                {cell}
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
+      {/* <div className={styles.foundWords}>
+        <h3>Words Found:</h3>
+        <ul>
+          {foundWords.map((word, index) => (
+            <li key={index}>{word}</li>
+          ))}
+        </ul>
+      </div> */}
     </div>
   );
 };
