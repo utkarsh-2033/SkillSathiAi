@@ -16,10 +16,9 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 5000;
-
 app.use(
   cors({
-    origin: "http://localhost:5173", // React app URL
+    origin: "https://skill-sathi-ai.vercel.app", // React app URL
     methods: ["GET", "POST"],
     credentials: true,
   })
@@ -39,7 +38,7 @@ mongoose
 const httpServer = http.createServer(app);
 const io = socketIo(httpServer, {
   cors: {
-    origin: "http://localhost:5173", // React app URL
+    origin: "https://skill-sathi-ai.vercel.app", // React app URL
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
     credentials: true,
