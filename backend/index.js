@@ -50,9 +50,6 @@ const io = socketIo(httpServer, {
 initializeWebSocket(io);
 
 // Start the HTTP server
-httpServer.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
 
 // Route to run ML model (server.py)
 app.post("/mlmodel", (req, res) => {
@@ -103,4 +100,8 @@ app.use((err, req, res, next) => {
   const message = err.message || "Internal server error";
   res.status(statusCode).json({ success: false, message });
   next();
+});
+
+httpServer.listen(port,"0.0.0.0", () => {
+  console.log(`Server is running on port ${port}`);
 });
