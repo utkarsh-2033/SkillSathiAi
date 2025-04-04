@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import {logo} from "../assets/logo.png"
 import { selectUser } from "../redux/slices/userSlice";
 
 
@@ -140,7 +141,8 @@ function HomePage() {
         <div className="container mx-auto flex flex-col md:flex-row items-center justify-center lg:space-x-20 lg:text-2xl">
           <div className="md:w-full mt-10 md:mt-0 flex justify-center lg:w-1/2 lg:mt-0 lg:h-[100%]">
             <img
-              src="https://www.htmlpanda.com/blog/wp-content/uploads/2021/06/A-Complete-Guide-on-E-Learning-Website-Development-750x375.png"
+            src={logo}
+              // src="https://www.htmlpanda.com/blog/wp-content/uploads/2021/06/A-Complete-Guide-on-E-Learning-Website-Development-750x375.png"
               alt="Online Education Illustration"
               className="w-[90%] lg:w-[120%] lg:h-auto"
             />

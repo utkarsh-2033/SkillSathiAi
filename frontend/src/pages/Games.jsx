@@ -12,12 +12,11 @@ const GameSelectionPage = () => {
   const user = useSelector(selectUser);
   const userId = user._id;
 
-
   // Fetch the user's rewards (coins)
   useEffect(() => {
     const fetchRewards = async () => {
       try {
-        const response = await axios.get(`/user/${userId}`);
+        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user/${userId}`);
         if (response.status === 200 && response.data.rewards) {
           setUserCoins(response.data.rewards.coins); // Assuming 'coins' is a property of rewards
         }

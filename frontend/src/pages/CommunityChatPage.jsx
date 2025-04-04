@@ -3,7 +3,8 @@ import { io } from "socket.io-client";
 import { selectUser } from "../redux/slices/userSlice";
 import { useSelector } from "react-redux";
 
-const socket = io("http://localhost:5000"); // Connection to the WebSocket server
+// const socket = io("http://localhost:5000"); // Connection to the WebSocket server
+const socket = io(`${import.meta.env.VITE_BACKEND_URL}`); // Connection to the WebSocket server
 
 const ChatRoom = () => {
   const [careerGoal, setCareerGoal] = useState("");

@@ -47,7 +47,7 @@ const Quiz = () => {
     const fetchQuestions = async () => {
       try {
         const response = await fetch(
-          `/api/quiz/questions?title=${skillname}&level=${level}`
+          `${import.meta.env.VITE_BACKEND_URL}/api/quiz/questions?title=${skillname}&level=${level}`
         );
         const data = await response.json();
         // console.log(data);
@@ -103,7 +103,7 @@ const Quiz = () => {
     // console.log(resultData);
 
     try {
-      const res = await fetch(`/user/saveQuizResult/${user._id}`, {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user/saveQuizResult/${user._id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

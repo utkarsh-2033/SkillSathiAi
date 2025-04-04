@@ -64,7 +64,7 @@ const Profile = () => {
     e.preventDefault();
     setuploadcomplete(false);
     try {
-      const res = await fetch(`/user/updateprofile/${user._id}`, {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user/updateprofile/${user._id}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -85,7 +85,7 @@ const Profile = () => {
 
   const deleteUserHandler = async () => {
     try {
-      const res = await fetch(`/user/deleteuser/${user._id}`, {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user/deleteuser/${user._id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -106,7 +106,7 @@ const Profile = () => {
 
   const logoutHandler = async () => {
     try {
-      const res = await fetch("/user/logout", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user/logout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -46,7 +46,7 @@ const ProgressPage = () => {
 
 
         // Fetch filtered progress
-        const filteredResponse = await axios.get(`/user/filteredprogress/${user._id}`);
+        const filteredResponse = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user/filteredprogress/${user._id}`);
         const progressArray = filteredResponse.data.map((entry) => ({
           skillName: entry.skillName,
           level: entry.level,
@@ -64,12 +64,12 @@ const ProgressPage = () => {
 
 
         // Fetch all progress
-        const allResponse = await axios.get(`/user/allprogress/${user._id}`);
+        const allResponse = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user/allprogress/${user._id}`);
         setProgressAllData(allResponse.data);
 
 
         // Fetch skill proficiency assessment
-        const skillResponse = await axios.get(`/user/skillassessment/${user._id}`);
+        const skillResponse = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/user/skillassessment/${user._id}`);
         setSkillProficiency(skillResponse.data);
 
 

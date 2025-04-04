@@ -25,7 +25,7 @@ const dispatch=useDispatch();
   useEffect(() => {
     const fetchCareerGoals = async () => {
       try {
-        const response = await fetch("/api/careergoals");
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/careergoals`);
         const data = await response.json();
         setCareerGoals(data);
       } catch (error) {
@@ -44,9 +44,10 @@ const dispatch=useDispatch();
       ...prevData,
       careerGoalName: careerGoalId,
     }));
+    
     // Fetch career goal details (levels and sub-levels)
     try {
-      const response = await fetch(`/api/careergoals/${careerGoalId}`);
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/careergoals/${careerGoalId}`);
       const data = await response.json();
       setLevels(data.levels || []); // Update levels based on the selected career goal
       setSkills([]); // Reset skills when a new career goal is selected

@@ -17,7 +17,7 @@ const Signin = () => {
     e.preventDefault();
     dispatch(SiginStart());
     try {
-      const res = await fetch("/api/auth/signin", {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/signin`, {
         method: "POST",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify(formdata),

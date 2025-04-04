@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { selectUser, logoutUser } from "../redux/slices/userSlice";
+import {logo} from "../assets/logo.png"; // Adjust the path as necessary
 
 const Navbar2 = () => {
   const user = useSelector(selectUser);
@@ -42,6 +43,7 @@ const Navbar2 = () => {
       <div className="flex justify-between items-center py-2 px-4 max-w-7xl mx-auto shadow-lg">
         {/* Logo */}
         <Link to="/">
+        <img src={logo} alt="" />
           <p className="font-extrabold text-sm sm:text-2xl">
             <span className="text-white">SkillSathi</span>
             <span className="text-[#9333ea]">AI</span>

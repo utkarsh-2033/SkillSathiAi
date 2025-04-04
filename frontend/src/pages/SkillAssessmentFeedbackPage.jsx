@@ -12,7 +12,7 @@ const SkillAssessmentFeedbackPage = () => {
 
   useEffect(() => {
     // Fetch the latest skillProficiencyAssessment data
-    fetch(`/user/api/skill-assessment-feedback/${user._id}`)
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/user/api/skill-assessment-feedback/${user._id}`)
       .then((response) => response.json())
       .then((data) => {
         setSkillData(data.latestAssessment); // Set the most recent assessment data

@@ -35,7 +35,7 @@ const LearningPath = ({ userId }) => {
     const fetchLearningPath = async () => {
       try {
         const response = await fetch(
-          `user/api/learning-path-timeline/${user._id}`
+         `${import.meta.env.VITE_BACKEND_URL}user/api/learning-path-timeline/${user._id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch the learning path.");

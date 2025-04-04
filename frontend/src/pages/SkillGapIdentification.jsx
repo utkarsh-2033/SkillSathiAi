@@ -15,7 +15,7 @@ const SkillGapIdentificationPage = () => {
 
   useEffect(() => {
     // Fetch the user's quiz progress from the last 24 hours
-    fetch(`/user/api/quiz-progress/${user._id}`)
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/user/api/quiz-progress/${user._id}`)
       .then((response) => response.json())
       .then((data) => {
         setQuizProgress(data);
@@ -68,7 +68,8 @@ const SkillGapIdentificationPage = () => {
     console.log("Sending data for proficiency testing:", data);
     console.log(data);
     // Add your backend request here to send the data for processing
-    fetch("http://127.0.0.1:5001/predict", {
+    // fetch("http://127.0.0.1:5001/predict", {
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/predict`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -81,7 +82,8 @@ const SkillGapIdentificationPage = () => {
         setIsSending(false);
 
         // Save the ML response to the user database
-        fetch(`/user/api/save-skill-assessment/${user._id}`, {
+        
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/user/api/save-skill-assessment/${user._id}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

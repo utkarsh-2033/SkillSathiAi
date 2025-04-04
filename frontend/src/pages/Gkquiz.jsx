@@ -12,7 +12,7 @@ const Question = () => {
   const fetchQuestion = async (questionId) => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/questions/${questionId}`
+        `${import.meta.env.VITE_BACKEND_URL}/questions/${questionId}`
       );
       setCurrentQuestion(res.data);
     } catch (err) {
@@ -38,7 +38,7 @@ const Question = () => {
   const determineCareerGoal = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/questions/career-goal",
+        `${import.meta.env.VITE_BACKEND_URL}/questions/career-goal`,
         { answers }
       );
       setCareerGoals(res.data.topGoals);

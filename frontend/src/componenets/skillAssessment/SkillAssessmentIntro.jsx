@@ -19,9 +19,10 @@ const SkillAssessmentIntro = ({
   const location=useLocation();
   // Function to fetch progress data
   const list=location.state?.from==='careergoal'? knownskills:skills;
+  
   const fetchUserProgress = async (userId) => {
     try {
-      const response = await fetch(`user/api/progress/${userId}`);
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/user/api/progress/${userId}`);
       if (!response.ok) {
         throw new Error("Failed to fetch progress data");
       }
