@@ -54,6 +54,42 @@ httpServer.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
+// Route to run ML model (server.py)
+app.post("/mlmodel", (req, res) => {
+  let options = { args: [JSON.stringify(req.body)] };
+  PythonShell.run("MLmodel/server.py", options, (err, result) => {
+    if (err) return res.status(500).send(err);
+    res.send(result.toString());
+  });
+});
+
+// Detailed Feedback (detailedfeedback.py)
+app.post("/detailed-feedback", (req, res) => {
+  let options = { args: [JSON.stringify(req.body)] };
+  PythonShell.run("MLmodel/detailedfeedback.py", options, (err, result) => {
+    if (err) return res.status(500).send(err);
+    res.send(result.toString());
+  });
+});
+
+// Route to get course recommendations (app.py)
+app.post("/recommend", (req, res) => {
+  let options = { args: [JSON.stringify(req.body)] };
+  PythonShell.run("RecommendationModel/app.py", options, (err, result) => {
+    if (err) return res.status(500).send(err);
+    res.send(result.toString());
+  });
+});
+
+// Route to generate detailed learning path (learningpath.py)
+app.post("/learning-path", (req, res) => {
+  let options = { args: [JSON.stringify(req.body)] };
+  PythonShell.run("RecommendationModel/learningpath.py", options, (err, result) => {
+    if (err) return res.status(500).send(err);
+    res.send(result.toString());
+  });
+});
+
 // Routes
 app.use("/api", quizRoutes);
 app.use("/api", authRoutes);
