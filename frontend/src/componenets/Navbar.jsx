@@ -43,7 +43,7 @@ const Navbar2 = () => {
       <div className="flex justify-between items-center py-2 px-4 max-w-7xl mx-auto shadow-lg">
         {/* Logo */}
         <Link to="/">
-        <img src={logo} alt="" />
+        <img src={logo} alt="" className="w-10 h-10 sm:w-12 sm:h-12 object-contain"/>
           <p className="font-extrabold text-sm sm:text-2xl">
             <span className="text-white">SkillSathi</span>
             <span className="text-[#9333ea]">AI</span>
