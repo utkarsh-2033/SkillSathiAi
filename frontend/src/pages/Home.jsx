@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {logo} from "../assets/logo.png"
+import logo from "../assets/logo.png"
 import { selectUser } from "../redux/slices/userSlice";
 
 
