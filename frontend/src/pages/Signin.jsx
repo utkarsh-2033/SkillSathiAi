@@ -20,6 +20,7 @@ const Signin = () => {
       const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/signin`, {
         method: "POST",
         headers: { "Content-type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(formdata),
         // credentials: 'include',
       });

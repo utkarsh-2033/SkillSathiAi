@@ -6,15 +6,16 @@ import logo from "../assets/logo.png"; // Adjust the path as necessary
 
 const Navbar2 = () => {
   const user = useSelector(selectUser);
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
-  const [isMenuOpen, setMenuOpen] = useState(false); // New state for main menu
+  const [isProfileDropdownOpen, setProfileDropdownOpen] = useState(false); // For desktop profile dropdown
+  const [mobileDropdown, setMobileDropdown] = useState(null); // For mobile Tools/User dropdown ("tools", "user", or null)
+  const [isMenuOpen, setMenuOpen] = useState(false); // State for main mobile menu
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const DropdownRef = useRef(null);
 
   const handleClickOutside = (e) => {
     if (DropdownRef.current && !DropdownRef.current.contains(e.target)) {
-      setDropdownOpen(false);
+      setProfileDropdownOpen(false);
     }
   };
 
@@ -30,8 +31,8 @@ const Navbar2 = () => {
     navigate("/signin"); // Redirect to the login page after logout
   };
 
-  const toggleDropdown = () => {
-    setDropdownOpen((prevState) => !prevState);
+  const toggleProfileDropdown = () => {
+    setProfileDropdownOpen((prevState) => !prevState);
   };
 
   const toggleMenu = () => {
@@ -42,8 +43,12 @@ const Navbar2 = () => {
     <header className="bg-gray-700 rounded-md">
       <div className="flex justify-between items-center py-2 px-4 max-w-7xl mx-auto shadow-lg">
         {/* Logo */}
-        <Link to="/">
-        <img src={logo} alt="" className="w-10 h-10 sm:w-12 sm:h-12 object-contain"/>
+        <Link to="/" className="flex items-center space-x-2">
+          <img
+            src={logo}
+            alt=""
+            className="w-10 h-10 sm:w-12 sm:h-12 object-contain"
+          />
           <p className="font-extrabold text-sm sm:text-2xl">
             <span className="text-white">SkillSathi</span>
             <span className="text-[#9333ea]">AI</span>
@@ -82,7 +87,7 @@ const Navbar2 = () => {
             <div className="hidden sm:block relative">
               <div
                 className="cursor-pointer flex items-center"
-                onClick={toggleDropdown}
+                onClick={toggleProfileDropdown}
               >
                 <img
                   src={user.photo || "https://via.placeholder.com/150"}
@@ -90,7 +95,7 @@ const Navbar2 = () => {
                   className="rounded-full h-12 w-12 object-cover"
                 />
               </div>
-              {isDropdownOpen && (
+              {isProfileDropdownOpen && (
                 <div
                   ref={DropdownRef}
                   className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-2xl z-50"
@@ -159,13 +164,13 @@ const Navbar2 = () => {
         </div>
 
         {/* Dropdown Menu Button (for smaller devices) */}
-        <buttonb
+        <button
           className="text-white text-2xl lg:hidden"
           onClick={toggleMenu}
           aria-label="Toggle Menu"
         >
           ☰ {/* Hamburger icon */}
-        </buttonb>
+        </button>
 
         {/* Dropdown Menu for all links (visible on smaller devices) */}
         {isMenuOpen && (
@@ -176,17 +181,17 @@ const Navbar2 = () => {
                 <div
                   className="font-semibold text-lg px-4 py-2 hover:bg-gray-100 rounded-md cursor-pointer flex justify-between items-center"
                   onClick={() =>
-                    setDropdownOpen((prev) =>
+                    setMobileDropdown((prev) =>
                       prev === "tools" ? null : "tools"
                     )
                   }
                 >
                   Tools
                   <span className="text-gray-500">
-                    {isDropdownOpen === "tools" ? "▲" : "▼"}
+                    {mobileDropdown === "tools" ? "▲" : "▼"}
                   </span>
                 </div>
-                {isDropdownOpen === "tools" && (
+                {mobileDropdown === "tools" && (
                   <ul className="bg-gray-50 rounded-md mt-2 shadow-inner">
                     <li>
                       <Link
@@ -224,15 +229,17 @@ const Navbar2 = () => {
                 <div
                   className="font-semibold text-lg px-4 py-2 hover:bg-gray-100 rounded-md cursor-pointer flex justify-between items-center"
                   onClick={() =>
-                    setDropdownOpen((prev) => (prev === "user" ? null : "user"))
+                    setMobileDropdown((prev) =>
+                      prev === "user" ? null : "user"
+                    )
                   }
                 >
                   User
                   <span className="text-gray-500">
-                    {isDropdownOpen === "user" ? "▲" : "▼"}
+                    {mobileDropdown === "user" ? "▲" : "▼"}
                   </span>
                 </div>
-                {isDropdownOpen === "user" && (
+                {mobileDropdown === "user" && (
                   <ul className="bg-gray-50 rounded-md mt-2 shadow-inner">
                     {user ? (
                       <>

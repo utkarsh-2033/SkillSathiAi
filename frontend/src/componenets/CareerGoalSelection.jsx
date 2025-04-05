@@ -82,7 +82,7 @@ const dispatch=useDispatch();
         // console.log(selectedCareerGoal);
         // console.log(levelName);
         const response = await fetch(
-          `/api/careergoals/${selectedCareerGoal}/levels/${levelName}`
+          `${import.meta.env.VITE_BACKEND_URL}/api/careergoals/${selectedCareerGoal}/levels/${levelName}`
         );
         const data = await response.json();
         // console.log(data);

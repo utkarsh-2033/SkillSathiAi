@@ -69,6 +69,7 @@ const Profile = () => {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify(formdata),
       });
       const result = await res.json();
