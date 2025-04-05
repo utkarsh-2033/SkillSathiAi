@@ -22,7 +22,7 @@ const CourseAndBookRecommendation = () => {
 
     try {
       // const response = await fetch("http://127.0.0.1:5000/course-recommendation", {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/course-recommendation`, {
+      const response = await fetch(`${import.meta.env.VITE_RECOMMENDATION_URL}/course-recommendation`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -60,7 +60,7 @@ const CourseAndBookRecommendation = () => {
     setBookRecommendations([]);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/book-recommendation`, {
+      const response = await fetch(`${import.meta.env.VITE_RECOMMENDATION_URL}/book-recommendation`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
