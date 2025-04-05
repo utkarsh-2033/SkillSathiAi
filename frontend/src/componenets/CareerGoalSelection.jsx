@@ -107,7 +107,7 @@ const dispatch=useDispatch();
     // Fetch skills for the selected sub-level
     try {
       const response = await fetch(
-        `/api/careergoals/${selectedCareerGoal}/levels/${t}/sublevels/${subLevelName}`
+        `${import.meta.env.VITE_BACKEND_URL}/api/careergoals/${selectedCareerGoal}/levels/${t}/sublevels/${subLevelName}`
       );
       const data = await response.json();
       setSkills(data); // Set skills for the selected sub-level
