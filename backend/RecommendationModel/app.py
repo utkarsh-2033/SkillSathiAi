@@ -6,6 +6,8 @@ from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import logging
 import os
+print("Render will bind to this port:", os.environ.get("PORT"))
+
 
 # Initialize the Flask app and CORS
 app = Flask(__name__)
@@ -161,6 +163,8 @@ def book_recommendation():
         return jsonify({"error": str(e)}), 500
 
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 3000))
+# if __name__ == "__main__":
+#     port = int(os.environ.get("PORT", 3000))
    
+# if __name__ == "__main__":
+#     app.run(port=5002, debug=True)
