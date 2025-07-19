@@ -63,9 +63,9 @@ const logoutuserhandler = (req, res, next) => {
 const updateCareerDetails = async (req, res) => {
   const userId = req.params.id;
 
-  if (req.user.userId !== userId) {
-    return res.status(403).json({ success: false, message: "unauthorized" });
-  }
+  // if (req.user.userId !== userId) {
+  //   return res.status(403).json({ success: false, message: "unauthorized" });
+  // }
   const { careerGoal, level, subLevel, skills } = req.body;
   // console.log(req.body);
   try {
