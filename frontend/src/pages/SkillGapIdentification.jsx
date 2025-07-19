@@ -69,7 +69,7 @@ const SkillGapIdentificationPage = () => {
     console.log(data);
     // Add your backend request here to send the data for processing
     // fetch("http://127.0.0.1:5001/predict", {
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/predict`, {
+    fetch(`${import.meta.env.VITE_ML_URL}/predict`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

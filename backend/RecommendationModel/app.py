@@ -1,10 +1,14 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import pandas as pd
+import numpy as np
 import json
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 import logging
+import os
+print("Render will bind to this port:", os.environ.get("PORT"))
+
 
 # Initialize the Flask app and CORS
 app = Flask(__name__)
@@ -25,11 +29,12 @@ df = pd.concat([df1, df2], ignore_index=True)
 df['clean_course_title'] = df['title'].fillna('').str.lower()
 
 # Load the Sentence Transformer model
+
+# Load the model (still needed for prompt embedding)
 sentence_model = SentenceTransformer('all-MiniLM-L6-v2')
 
-# Generate embeddings for course titles
-df['title_embedding'] = list(sentence_model.encode(df['clean_course_title'], show_progress_bar=True))
-
+# Load precomputed embeddings
+df['title_embedding'] = list(np.load("embeddings.npy", allow_pickle=True))
 
 @app.route('/course-recommendation', methods=['POST'])
 def course_recommendation():
@@ -160,5 +165,3 @@ def book_recommendation():
         return jsonify({"error": str(e)}), 500
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
