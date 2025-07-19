@@ -44,7 +44,9 @@ const jwt = require("jsonwebtoken");
       expiresIn: "1h",
     });
     res
-      .cookie("access_token", token, { httpOnly: true })
+      .cookie("access_token", token, { httpOnly: true , 
+        secure: process.env.NODE_ENV === "production", // only secure in prod
+        sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",})
       .status(200)
       .json({ success: true, message: "Login successful", user: rest });
   } catch (error) {
@@ -60,8 +62,11 @@ const jwt = require("jsonwebtoken");
       expiresIn: "1h",
     });
     const { password: pass, ...rest } = user._doc;
+    console.log("token", token);
     return res
-      .cookie("access_token", token, { httpOnly: true })
+      .cookie("access_token", token, { httpOnly: true , 
+        secure: process.env.NODE_ENV === "production", // only secure in prod
+        sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",})
       .status(200)
       .json({ success: true, message: "Login successful", user: rest });
   } else {
@@ -75,7 +80,9 @@ const jwt = require("jsonwebtoken");
       });
       const { password: pass, ...rest } = newUser._doc;
       return res
-        .cookie("access_token", token, { httpOnly: true })
+        .cookie("access_token", token, { httpOnly: true , 
+          secure: process.env.NODE_ENV === "production", // only secure in prod
+          sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",})
         .status(200)
         .json({ success: true, message: "Login successful", user: rest });
     } catch (err) {
